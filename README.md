@@ -5,11 +5,11 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 
 ## How to use
-`$ git clone https://github.com/titanium170/synoptic-project.git <br />
- $ cd synoptic-project <br />
- $ npm install <br />
- $ npm run start <br />
-`
+`$ git clone https://github.com/titanium170/synoptic-project.git` <br />
+ `$ cd synoptic-project` <br />
+ `$ npm install` <br />
+ `$ npm run start` <br />
+
 
 
 
