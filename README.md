@@ -2,6 +2,17 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.3.
 
+
+
+## How to use
+`$ git clone https://github.com/titanium170/synoptic-project.git
+ $ cd synoptic-project
+ $ npm install
+ $ npm run start
+`
+
+
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
