@@ -1,0 +1,20 @@
+.upload {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.new-folder {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+button.upload-btn {
+  background: transparent;
+  border: none !important;
+  font-size: 0;
+  outline: none;
+}

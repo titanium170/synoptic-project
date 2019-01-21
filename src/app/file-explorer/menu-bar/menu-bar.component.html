@@ -1,0 +1,15 @@
+<mat-toolbar>
+  <mat-icon *ngIf="canNavigateUp" class="pointer" (click)="navigateUp()">
+    arrow_back
+  </mat-icon>
+  <span style="margin-left: 8px">
+    {{path || 'Files'}}
+  </span>
+  <span class="spacer"></span>
+  <mat-icon class="upload-btn pointer" (click)="openSaveFileDialog()">save</mat-icon>
+  <mat-icon class="upload-btn pointer" (click)="openFileUploadDialog()">cloud_upload</mat-icon>
+  <mat-icon class="pointer new-folder" (click)="openNewFolderDialog()">
+    create_new_folder
+  </mat-icon>
+</mat-toolbar>
+<h6>{{selectedFiles}}</h6>
