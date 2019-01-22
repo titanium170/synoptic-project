@@ -1,7 +1,7 @@
-<div style="padding: 100px; height: 100%; box-sizing: border-box;">
+<div style="padding: 100px; height: 100%; box-sizing: border-box;" (drop)="onDrop($event)" (draggable)="onDragOver($event)">
   <mat-card style="height: 100%; box-sizing: border-box; padding:0">
-    <app-menu-bar [path]="currentPath" [canNavigateUp]="canNavigateUp" (folderAdded)="addFolder($event)" (navigatedUp)="navigateUp()"></app-menu-bar>
-    <file-explorer [fileElements]="fileElements | async" (elementRemoved)="removeElement($event)" (elementRenamed)="renameElement($event)" (elementMoved)="moveElement($event)" (navigatedDown)="navigateToFolder($event)">
+    <app-menu-bar [path]="currentPath" [canNavigateUp]="canNavigateUp" (folderAdded)="addFolder($event)" (fileAdded)="addFile($event)" (navigatedUp)="navigateUp()"></app-menu-bar>
+    <file-explorer [fileElements]="fileElements$ | async" (elementRemoved)="removeElement($event)" (elementRenamed)="renameElement($event)" (elementMoved)="moveElement($event)" (navigatedDown)="navigateToFolder($event)">
     </file-explorer>
   </mat-card>
 </div>

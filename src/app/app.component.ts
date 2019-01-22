@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FileElement } from './file-explorer/models/file-element';
 import { FileService } from './service/file.service';
+import { MediaFile } from './file-explorer/models/media-file';
 
 
 @Component({
@@ -12,7 +13,7 @@ import { FileService } from './service/file.service';
 export class AppComponent {
   title = 'app';
 
-  fileElements: Observable<FileElement[]>;
+  fileElements$: Observable<FileElement[]>;
   currentRoot: FileElement;
   currentPath: string;
   canNavigateUp = false;
@@ -22,8 +23,32 @@ export class AppComponent {
   }
 
 
+  onDrop(event) {
+    event.preventDefault();
+    console.log('drop event: ', event);
+    console.log('dropped files: ', event.dataTransfer.files);
+  }
+  onDragOver(event) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+
   addFolder(folder: { name: string }) {
-    this.fileService.add({ isFolder: true, name: folder.name, parent: this.currentRoot ? this.currentRoot.id : 'root' });
+    this.fileService.add({
+      isFolder: true,
+      name: folder.name,
+      parent: this.currentRoot ? this.currentRoot.id : 'root'
+    });
+    this.updateFileElementQuery();
+  }
+
+  addFile(file: MediaFile) {
+    this.fileService.add({
+      isFolder: false,
+      name: file.name,
+      parent: this.currentRoot ? this.currentRoot.id : 'root',
+      media: file
+    });
     this.updateFileElementQuery();
   }
 
@@ -43,7 +68,7 @@ export class AppComponent {
   }
 
   updateFileElementQuery() {
-    this.fileElements = this.fileService.queryInFolder(this.currentRoot ? this.currentRoot.id : 'root');
+    this.fileElements$ = this.fileService.queryInFolder(this.currentRoot ? this.currentRoot.id : 'root');
   }
 
   navigateUp() {
@@ -78,9 +103,5 @@ export class AppComponent {
     p = split.join('/');
     return p;
   }
-  // fileToUpload: File = null;
-  //
-  // handleFileInput(files: FileList) {
-  //   this.fileToUpload = files.item(0);
-  // }
+
 }

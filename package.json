@@ -29,6 +29,7 @@
     "core-js": "^2.5.4",
     "ngx-contextmenu": "^5.1.1",
     "ngx-electron": "^2.1.1",
+    "recursive-readdir": "^2.2.2",
     "rxjs": "^6.0.0",
     "uuid": "^3.3.2",
     "zone.js": "^0.8.26"

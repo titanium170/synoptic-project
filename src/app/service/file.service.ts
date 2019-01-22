@@ -15,30 +15,32 @@ export interface IFileService {
   providedIn: 'root'
 })
 export class FileService implements IFileService {
-  private map = new Map<string, FileElement>();
+  private fileElementMap = new Map<string, FileElement>();
+  private querySubject: BehaviorSubject<FileElement[]>;
 
   constructor() { }
 
   add(fileElement: FileElement) {
-    fileElement.id = v4();
-    this.map.set(fileElement.id, this.clone(fileElement));
-    return fileElement;
+    if (!this.fileExists(fileElement)) {
+      fileElement.id = v4();
+      this.fileElementMap.set(fileElement.id, this.clone(fileElement));
+      return fileElement;
+    }
   }
 
   delete(id: string) {
-    this.map.delete(id);
+    this.fileElementMap.delete(id);
   }
 
   update(id: string, update: Partial<FileElement>) {
-    let element = this.map.get(id);
+    let element = this.get(id);
     element = Object.assign(element, update);
-    this.map.set(element.id, element);
+    this.fileElementMap.set(element.id, element);
   }
 
-  private querySubject: BehaviorSubject<FileElement[]>;
-  queryInFolder(folderId: string) {
+  queryInFolder(folderId: string): Observable<FileElement[]> {
     const result: FileElement[] = [];
-    this.map.forEach(element => {
+    this.fileElementMap.forEach(element => {
       if (element.parent === folderId) {
         result.push(this.clone(element));
       }
@@ -52,10 +54,17 @@ export class FileService implements IFileService {
   }
 
   get(id: string) {
-    return this.map.get(id);
+    return this.fileElementMap.get(id);
   }
 
-  clone(element: FileElement) {
+  private fileExists(file: FileElement) {
+    const arr = Array.from(this.fileElementMap.values());
+    return arr.filter((fe: FileElement) => {
+      return fe.name === file.name && fe.parent === file.parent;
+    }).length > 0;
+  }
+
+  private clone(element: FileElement) {
     return JSON.parse(JSON.stringify(element));
   }
 }
