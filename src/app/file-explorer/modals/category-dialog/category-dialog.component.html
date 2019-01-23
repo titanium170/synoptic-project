@@ -1,0 +1,22 @@
+<mat-toolbar>
+  <h1 mat-dialog-title>Categories</h1>
+  <span class="spacer"></span>
+  <mat-icon class="pointer" (click)="add()">add</mat-icon>
+</mat-toolbar>
+
+
+<mat-dialog-content>
+  <mat-list role="list">
+    <mat-list-item role="listitem" *ngFor="let category of categories">
+      {{category.name}}
+      <span class="spacer"></span>
+      <mat-icon class="pointer" (click)="rename(category.name)">edit</mat-icon>
+      <mat-icon class="pointer" (click)="delete(category.name)">delete</mat-icon>
+    </mat-list-item>
+  </mat-list>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button mat-dialog-close color="primary">OK</button>
+</mat-dialog-actions>

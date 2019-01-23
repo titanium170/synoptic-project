@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FileElement } from './models/file-element';
 import { MatDialog } from '@angular/material/dialog';
-import { RenameDialogComponent } from './modals/rename-dialog/rename-dialog.component';
+import { NameDialogComponent } from './modals/name-dialog/name-dialog.component';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { ViewMediaDialogComponent } from './modals/view-media-dialog/view-media-dialog.component';
 
@@ -33,7 +33,7 @@ export class FileExplorerComponent {
   }
 
   openRenameDialog(element: FileElement) {
-    let dialogRef = this.dialog.open(RenameDialogComponent);
+    let dialogRef = this.dialog.open(NameDialogComponent, { data: { name: element.name, title: 'Rename Element', placeholder: 'File/Folder Name' } });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         element.name = res;

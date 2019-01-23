@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>{{ data.title || 'Name element'}}</h1>
+
+<mat-dialog-content>
+  <mat-form-field class="example-full-width">
+    <input matInput [placeholder]="data.placeholder || 'Name'" [(ngModel)]="data.name">
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button [mat-dialog-close]="data.name" color="primary">OK</button>
+</mat-dialog-actions>

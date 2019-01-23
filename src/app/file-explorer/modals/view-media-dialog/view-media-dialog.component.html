@@ -10,7 +10,7 @@
     <p class="mat-body-1">Path: {{media.path}}</p>
     <p class="mat-body-1">Type: {{media.type}}</p>
     <p class="mat-body-1">Comment: {{media.comment || '' }}</p>
-    <p class="mat-body-1">Category: {{media.category?.name || 'none'}}</p>
+    <p class="mat-body-1">Categories: {{ getCategories() || 'none'}}</p>
     <p class="mat-body-1">Playlists: {{ getPlaylists() || 'none' }}</p>
   </div>
   <div class="form-container" *ngIf="isEditing">
@@ -21,17 +21,20 @@
       <input matInput placeholder="Comment" [(ngModel)]="media.comment">
     </mat-form-field>
     <mat-form-field class="example-full-width">
-      <mat-select placeholder="Category (optional)" [formControl]="categories">
-        <mat-select-trigger>
-          {{categories.value?.name || media.category?.name || 'none'}}
+      <mat-select placeholder="Categories (optional)" [formControl]="categories" multiple>
+        <mat-select-trigger *ngIf="categories">
+          {{categories.value ? categories.value[0].name : 'none'}}
+          <span *ngIf="categories.value?.length > 1" class="example-additional-selection">
+            (+{{categories.value.length - 1}} {{categories.value?.length === 2 ? 'other' : 'others'}})
+          </span>
         </mat-select-trigger>
         <mat-option *ngFor="let category of categoryOptions" [value]="category">{{category.name}}</mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field class="example-full-width">
       <mat-select placeholder="Playlists (optional)" [formControl]="playlists" multiple>
-        <mat-select-trigger>
-          {{playlists.value ? playlists.value[0].name : (getPlaylists()[0] || 'none')}}
+        <mat-select-trigger *ngIf="playlists">
+          {{playlists.value ? playlists.value[0].name : 'none'}}
           <span *ngIf="playlists.value?.length > 1" class="example-additional-selection">
             (+{{playlists.value.length - 1}} {{playlists.value?.length === 2 ? 'other' : 'others'}})
           </span>

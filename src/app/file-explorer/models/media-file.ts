@@ -7,7 +7,7 @@ export class MediaFile {
   path: string;
   type: string; // TODO:  restrict types
   comment?: string;
-  category?: Category;
+  categories?: Category[];
   playlists?: Playlist[];
   image?: Image;
 }

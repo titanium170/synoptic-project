@@ -5,6 +5,7 @@ import { MediaFile } from '../models/media-file';
 import { ElectronService } from 'ngx-electron';
 import { SelectUploadDialogComponent } from '../modals/select-upload-dialog/select-upload-dialog.component';
 import { SaveFile } from '../models/save-file';
+import { CategoryDialogComponent } from '../modals/category-dialog/category-dialog.component';
 
 @Component({
   selector: 'app-menu-bar',
@@ -30,6 +31,15 @@ export class MenuBarComponent implements OnInit {
 
   ngOnInit() {
 
+  }
+
+  openCategoryDialog() {
+    const dialogRef = this.dialog.open(CategoryDialogComponent);
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        // do something
+      }
+    });
   }
 
   openNewFolderDialog() {

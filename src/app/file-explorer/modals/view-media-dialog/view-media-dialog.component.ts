@@ -4,6 +4,7 @@ import { MediaFile } from '../../models/media-file';
 import { FormControl } from '@angular/forms';
 import { Category } from '../../models/category';
 import { Playlist } from '../../models/playlist';
+import { CategoryService } from 'src/app/service/category.service';
 
 @Component({
   selector: 'app-view-media-dialog',
@@ -15,15 +16,7 @@ export class ViewMediaDialogComponent implements OnInit {
   // TODO: get options from a service
   public isEditing: boolean = false;
   public categories = new FormControl();
-  public categoryOptions: Category[] = [
-    { name: 'Classical' },
-    { name: 'Rock' },
-    { name: 'Pop' },
-    { name: 'Blues' },
-    { name: 'Jazz' },
-    { name: 'Rap' },
-    { name: 'Electronic' }
-  ];
+  public categoryOptions: Category[] = [];
   public playlists = new FormControl();
   public playlistOptions: Playlist[] = [
     { name: 'Chill' },
@@ -33,10 +26,13 @@ export class ViewMediaDialogComponent implements OnInit {
   ];
 
 
-  constructor(@Inject(MAT_DIALOG_DATA) public media: MediaFile) { }
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public media: MediaFile,
+    private categoryService: CategoryService) { }
 
 
   ngOnInit() {
+    this.categoryOptions = this.categoryService.getCategories();
   }
 
   getPlaylists() {
@@ -44,11 +40,20 @@ export class ViewMediaDialogComponent implements OnInit {
       const playlists = this.media.playlists.map(p => p.name);
       return playlists.join(', ');
     }
+    return [];
+  }
+
+  getCategories() {
+    if (this.media.categories) {
+      const categories = this.media.categories.map(p => p.name);
+      return categories.join(', ');
+    }
+    return [];
   }
 
   getUpdatedMedia() {
     if (this.categories.value) {
-      this.media.category = this.categories.value;
+      this.media.categories = this.categories.value;
     }
     if (this.playlists.value) {
       this.media.playlists = this.playlists.value;

@@ -19,16 +19,18 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle'
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-
+import { MatListModule } from '@angular/material/list';
+import { ScrollDispatchModule } from '@angular/cdk/scrolling';
 
 // Components
 import { AppComponent } from './app.component';
 import { FileExplorerComponent } from './file-explorer/file-explorer.component';
 import { NewFolderDialogComponent } from './file-explorer/modals/new-folder-dialog/new-folder-dialog.component';
-import { RenameDialogComponent } from './file-explorer/modals/rename-dialog/rename-dialog.component';
+import { NameDialogComponent } from './file-explorer/modals/name-dialog/name-dialog.component';
 import { SelectUploadDialogComponent } from './file-explorer/modals/select-upload-dialog/select-upload-dialog.component';
 import { MenuBarComponent } from './file-explorer/menu-bar/menu-bar.component';
 import { ViewMediaDialogComponent } from './file-explorer/modals/view-media-dialog/view-media-dialog.component';
+import { CategoryDialogComponent } from './file-explorer/modals/category-dialog/category-dialog.component';
 
 // External dependencies
 import { NgxElectronModule } from 'ngx-electron';
@@ -40,9 +42,10 @@ import { NgxElectronModule } from 'ngx-electron';
     AppComponent,
     FileExplorerComponent,
     NewFolderDialogComponent,
-    RenameDialogComponent,
+    NameDialogComponent,
     SelectUploadDialogComponent,
     ViewMediaDialogComponent,
+    CategoryDialogComponent,
     MenuBarComponent
   ],
   imports: [
@@ -64,15 +67,18 @@ import { NgxElectronModule } from 'ngx-electron';
     MatButtonToggleModule,
     MatSelectModule,
     MatFormFieldModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatListModule,
+    ScrollDispatchModule
   ],
   providers: [HttpClient],
   bootstrap: [AppComponent],
   entryComponents: [
     NewFolderDialogComponent,
-    RenameDialogComponent,
+    NameDialogComponent,
     SelectUploadDialogComponent,
-    ViewMediaDialogComponent
+    ViewMediaDialogComponent,
+    CategoryDialogComponent
   ]
 })
 export class AppModule { }
