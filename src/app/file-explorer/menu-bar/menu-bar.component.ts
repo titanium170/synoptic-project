@@ -4,6 +4,7 @@ import { NewFolderDialogComponent } from '../modals/new-folder-dialog/new-folder
 import { MediaFile } from '../models/media-file';
 import { ElectronService } from 'ngx-electron';
 import { SelectUploadDialogComponent } from '../modals/select-upload-dialog/select-upload-dialog.component';
+import { SaveFile } from '../models/save-file';
 
 @Component({
   selector: 'app-menu-bar',
@@ -17,6 +18,8 @@ export class MenuBarComponent implements OnInit {
   @Output() folderAdded = new EventEmitter<{ name: string }>();
   @Output() fileAdded = new EventEmitter<MediaFile>();
   @Output() navigatedUp = new EventEmitter();
+  @Output() saveState = new EventEmitter();
+  @Output() savedStateLoaded = new EventEmitter<SaveFile>();
 
   public selectedFiles;
 
@@ -83,7 +86,8 @@ export class MenuBarComponent implements OnInit {
 
 
   getFileNameFromPath(path: string) {
-    return path.replace(/^.*[\\\/]/, '');
+    const fileName = path.replace(/^.*[\\\/]/, '');
+    return fileName.replace(/\.[^/.]+$/, '');
   }
 
   getFileTypeFromPath(path: string) {
@@ -91,36 +95,29 @@ export class MenuBarComponent implements OnInit {
     return regex.exec(path)[1];
   }
 
-  openDirectoryUploadDialog() {
-    this.electron.ipcRenderer.send('open-folder-dialog');
-    this.electron.ipcRenderer.on('selected-directory', (event: Event, path: Path2D) => {
-      if (!path) {
-        console.log('No folders were selected');
+  openSaveFileDialog() {
+    this.saveState.emit();
+  }
+
+  navigateUp() {
+    this.navigatedUp.emit();
+  }
+
+  openLoadFileDialog() {
+    this.electron.ipcRenderer.send('open-save-file-dialog', ['json']);
+    this.electron.ipcRenderer.on('selected-save-file', (event: Event, file: SaveFile) => {
+      if (!file) {
+        console.log('No file was selected');
         return;
       }
-      console.log('path: ', path);
-      console.log('event: ', event);
       // Electron is running outside of the angular zone (NgZone)
       // So change detection will not be run automatically
       // NgZone.run() is used to run change detection manually
       this.zone.run(() => {
-        this.selectedFiles = path;
-      })
+        this.savedStateLoaded.emit(file);
+      });
+      this.electron.ipcRenderer.removeAllListeners('selected-save-file');
     })
-  }
-
-  openSaveFileDialog() {
-    this.electron.ipcRenderer.send('save-file-dialog');
-    this.electron.ipcRenderer.on('file-created', (event: Event) => {
-      this.zone.run(() => {
-        this.selectedFiles = 'File created';
-      })
-    })
-  }
-
-
-  navigateUp() {
-    this.navigatedUp.emit();
   }
 
 

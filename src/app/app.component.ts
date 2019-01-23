@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { FileElement } from './file-explorer/models/file-element';
 import { FileService } from './service/file.service';
 import { MediaFile } from './file-explorer/models/media-file';
+import { SaveFile } from './file-explorer/models/save-file';
 
 
 @Component({
@@ -18,10 +19,19 @@ export class AppComponent {
   currentPath: string;
   canNavigateUp = false;
 
-  constructor(private fileService: FileService) {
+  constructor(
+    private fileService: FileService) {
 
   }
 
+  loadSave(saveFile: SaveFile) {
+    this.fileService.loadState(saveFile);
+    this.updateFileElementQuery();
+  }
+
+  saveState() {
+    this.fileService.saveState();
+  }
 
   onDrop(event) {
     event.preventDefault();

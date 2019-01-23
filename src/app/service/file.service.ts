@@ -1,12 +1,17 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { FileElement } from '../file-explorer/models/file-element';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { v4 } from 'uuid';
+import { MediaFile } from '../file-explorer/models/media-file';
+import { SaveFile } from '../file-explorer/models/save-file';
+import { ElectronService } from 'ngx-electron';
 
 export interface IFileService {
   add(fileElement: FileElement);
   delete(id: string);
   update(id: string, update: Partial<FileElement>);
+  saveState();
+  loadState(saveFile: SaveFile);
   queryInFolder(folderId: string): Observable<FileElement[]>;
   get(id: string): FileElement;
 }
@@ -18,11 +23,11 @@ export class FileService implements IFileService {
   private fileElementMap = new Map<string, FileElement>();
   private querySubject: BehaviorSubject<FileElement[]>;
 
-  constructor() { }
+  constructor(private electron: ElectronService, private zone: NgZone) { }
 
   add(fileElement: FileElement) {
     if (!this.fileExists(fileElement)) {
-      fileElement.id = v4();
+      fileElement.id = (fileElement.id ? fileElement.id : v4()); // handles previously saved files
       this.fileElementMap.set(fileElement.id, this.clone(fileElement));
       return fileElement;
     }
@@ -36,6 +41,28 @@ export class FileService implements IFileService {
     let element = this.get(id);
     element = Object.assign(element, update);
     this.fileElementMap.set(element.id, element);
+  }
+
+  saveState() {
+    const files: FileElement[] = Array.from(this.fileElementMap.values());
+    const saveFile: SaveFile = {
+      files: files,
+      playlists: [{ name: 'Running' }],
+      categories: [{ name: 'Jazz' }]
+    };
+    this.electron.ipcRenderer.send('save-file-dialog', ['json'], JSON.stringify(saveFile));
+    this.electron.ipcRenderer.on('save-file-created', (event: Event) => {
+      this.zone.run(() => {
+        alert('State saved successfully');
+      })
+    })
+  }
+
+  loadState(saveFile: SaveFile) {
+    this.fileElementMap.clear();
+    for (const file of saveFile.files) {
+      this.add(file);
+    }
   }
 
   queryInFolder(folderId: string): Observable<FileElement[]> {
