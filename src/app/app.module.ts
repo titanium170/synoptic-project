@@ -28,9 +28,11 @@ import { NewFolderDialogComponent } from './file-explorer/modals/new-folder-dial
 import { RenameDialogComponent } from './file-explorer/modals/rename-dialog/rename-dialog.component';
 import { SelectUploadDialogComponent } from './file-explorer/modals/select-upload-dialog/select-upload-dialog.component';
 import { MenuBarComponent } from './file-explorer/menu-bar/menu-bar.component';
+import { ViewMediaDialogComponent } from './file-explorer/modals/view-media-dialog/view-media-dialog.component';
 
 // External dependencies
 import { NgxElectronModule } from 'ngx-electron';
+
 
 
 @NgModule({
@@ -40,6 +42,7 @@ import { NgxElectronModule } from 'ngx-electron';
     NewFolderDialogComponent,
     RenameDialogComponent,
     SelectUploadDialogComponent,
+    ViewMediaDialogComponent,
     MenuBarComponent
   ],
   imports: [
@@ -65,6 +68,11 @@ import { NgxElectronModule } from 'ngx-electron';
   ],
   providers: [HttpClient],
   bootstrap: [AppComponent],
-  entryComponents: [NewFolderDialogComponent, RenameDialogComponent, SelectUploadDialogComponent]
+  entryComponents: [
+    NewFolderDialogComponent,
+    RenameDialogComponent,
+    SelectUploadDialogComponent,
+    ViewMediaDialogComponent
+  ]
 })
 export class AppModule { }

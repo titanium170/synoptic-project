@@ -2,11 +2,11 @@
 
 <mat-dialog-content>
   <mat-form-field class="example-full-width">
-    <input matInput placeholder="Folder Name" [(ngModel)]="folderName">
+    <input matInput placeholder="Folder/File Name" [(ngModel)]="folderName">
   </mat-form-field>
 </mat-dialog-content>
 
-<mat-dialog-actions>
+<mat-dialog-actions align="end">
   <button mat-raised-button mat-dialog-close>Cancel</button>
   <button mat-raised-button [mat-dialog-close]="folderName" color="primary">OK</button>
 </mat-dialog-actions>

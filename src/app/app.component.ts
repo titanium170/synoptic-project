@@ -67,6 +67,11 @@ export class AppComponent {
     this.updateFileElementQuery();
   }
 
+  updateElementMedia(element: FileElement) {
+    this.fileService.update(element.id, { media: element.media });
+    this.updateFileElementQuery();
+  }
+
   updateFileElementQuery() {
     this.fileElements$ = this.fileService.queryInFolder(this.currentRoot ? this.currentRoot.id : 'root');
   }

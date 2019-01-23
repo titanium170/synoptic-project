@@ -3,10 +3,6 @@
   margin-right: 10px;
 }
 
-.spacer {
-  flex: 1 1 auto;
-}
-
 button.upload-btn {
   background: transparent;
   border: none !important;

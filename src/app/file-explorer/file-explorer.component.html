@@ -16,7 +16,7 @@
             insert_drive_file
           </mat-icon>
 
-          <span>{{element.name}}</span>
+          <span>{{element.media?.name || element.name}}</span>
         </div>
       </mat-grid-tile>
     </mat-grid-list>
@@ -25,6 +25,10 @@
 
 <mat-menu #rootMenu="matMenu" [overlapTrigger]="false">
   <ng-template matMenuContent let-element="element">
+    <button mat-menu-item (click)="openViewMediaDialog(element)">
+      <mat-icon>search</mat-icon>
+      <span>View</span>
+    </button>
     <button mat-menu-item [matMenuTriggerFor]="moveToMenu" [matMenuTriggerData]="{self: element}">
       <mat-icon>open_with</mat-icon>
       <span>Move To</span>

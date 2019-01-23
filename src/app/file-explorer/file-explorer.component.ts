@@ -3,6 +3,7 @@ import { FileElement } from './models/file-element';
 import { MatDialog } from '@angular/material/dialog';
 import { RenameDialogComponent } from './modals/rename-dialog/rename-dialog.component';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { ViewMediaDialogComponent } from './modals/view-media-dialog/view-media-dialog.component';
 
 @Component({
   selector: 'file-explorer',
@@ -10,11 +11,13 @@ import { MatMenuTrigger } from '@angular/material/menu';
   styleUrls: ['./file-explorer.component.css']
 })
 export class FileExplorerComponent {
+
   @Input() fileElements: FileElement[];
 
 
   @Output() elementRemoved = new EventEmitter<FileElement>();
   @Output() elementRenamed = new EventEmitter<FileElement>();
+  @Output() elementMediaUpdated = new EventEmitter<FileElement>();
   @Output() elementMoved = new EventEmitter<{ element: FileElement; moveTo: FileElement }>();
   @Output() navigatedDown = new EventEmitter<FileElement>();
 
@@ -41,7 +44,19 @@ export class FileExplorerComponent {
   navigate(element: FileElement) {
     if (element.isFolder) {
       this.navigatedDown.emit(element);
+    } else {
+      this.openViewMediaDialog(element);
     }
+  }
+
+  openViewMediaDialog(element: FileElement) {
+    const dialogRef = this.dialog.open(ViewMediaDialogComponent, { data: element.media });
+    dialogRef.afterClosed().subscribe(media => {
+      if (media) {
+        element.media = media;
+        this.elementMediaUpdated.emit(element);
+      }
+    });
   }
 
   openMenu(event: MouseEvent, element: FileElement, viewChild: MatMenuTrigger) {
