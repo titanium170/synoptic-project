@@ -1,14 +1,26 @@
 <mat-toolbar>
-  <mat-icon *ngIf="canNavigateUp" class="pointer" (click)="navigateUp()">
-    arrow_back
-  </mat-icon>
-  <span style="margin-left: 8px">
-    {{path || 'Files'}}
+  <span class="files">
+    <mat-icon *ngIf="canNavigateUp" class="pointer" (click)="navigateUp()">
+      arrow_back
+    </mat-icon>
+    <span style="margin-left: 8px">
+      {{path || 'Files'}}
+    </span>
+    <span class="spacer"></span>
+    <span class="file-buttons">
+      <mat-icon class="menu-btn pointer" (click)="openCategoryDialog()">category</mat-icon>
+      <mat-icon class="menu-btn pointer" (click)="openSaveFileDialog()">save</mat-icon>
+      <mat-icon class="menu-btn pointer" (click)="openLoadFileDialog()">folder_open</mat-icon>
+      <mat-icon class="menu-btn pointer" (click)="openFileUploadDialog()">cloud_upload</mat-icon>
+      <mat-icon class="menu-btn pointer" (click)="openNewFolderDialog()">create_new_folder</mat-icon>
+    </span>
   </span>
-  <span class="spacer"></span>
-  <mat-icon class="menu-btn pointer" (click)="openCategoryDialog()">category</mat-icon>
-  <mat-icon class="menu-btn pointer" (click)="openSaveFileDialog()">save</mat-icon>
-  <mat-icon class="menu-btn pointer" (click)="openLoadFileDialog()">folder_open</mat-icon>
-  <mat-icon class="menu-btn pointer" (click)="openFileUploadDialog()">cloud_upload</mat-icon>
-  <mat-icon class="menu-btn pointer" (click)="openNewFolderDialog()">create_new_folder</mat-icon>
+  <span class="playlists">
+    <mat-icon *ngIf="selectedPlaylist" class="pointer" (click)="closePlaylist()">arrow_back</mat-icon>
+    <span style="margin-right: 8px">
+      {{'Playlists' + (selectedPlaylist && selectedPlaylist.name ? ('/' + selectedPlaylist.name) : '')}}
+    </span>
+    <span class="spacer"></span>
+    <mat-icon class="menu-btn pointer" (click)="openNewPlaylistDialog()">playlist_add</mat-icon>
+  </span>
 </mat-toolbar>

@@ -32,7 +32,7 @@ export class CategoryDialogComponent implements OnInit {
     });
   }
 
-  rename(name) {
+  rename(name: string) {
     const dialogRef = this.dialog.open(NameDialogComponent, { data: { name: name, title: 'Rename Category', placeholder: 'Category Name' } });
     dialogRef.afterClosed().subscribe(newName => {
       this.categoryService.renameCategory(name, newName);

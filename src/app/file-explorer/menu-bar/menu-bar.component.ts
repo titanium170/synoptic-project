@@ -6,6 +6,8 @@ import { ElectronService } from 'ngx-electron';
 import { SelectUploadDialogComponent } from '../modals/select-upload-dialog/select-upload-dialog.component';
 import { SaveFile } from '../models/save-file';
 import { CategoryDialogComponent } from '../modals/category-dialog/category-dialog.component';
+import { NameDialogComponent } from '../modals/name-dialog/name-dialog.component';
+import { Playlist } from '../models/playlist';
 
 @Component({
   selector: 'app-menu-bar',
@@ -16,13 +18,17 @@ export class MenuBarComponent implements OnInit {
 
   @Input() path: string;
   @Input() canNavigateUp: string;
+  @Input() selectedPlaylist: Playlist;
+
   @Output() folderAdded = new EventEmitter<{ name: string }>();
   @Output() fileAdded = new EventEmitter<MediaFile>();
+  @Output() playlistAdded = new EventEmitter<string>();
+  @Output() playlistClosed = new EventEmitter();
   @Output() navigatedUp = new EventEmitter();
   @Output() saveState = new EventEmitter();
   @Output() savedStateLoaded = new EventEmitter<SaveFile>();
 
-  public selectedFiles;
+
 
   constructor(
     public dialog: MatDialog,
@@ -31,6 +37,18 @@ export class MenuBarComponent implements OnInit {
 
   ngOnInit() {
 
+  }
+
+  closePlaylist() {
+    this.selectedPlaylist = undefined;
+    this.playlistClosed.emit();
+  }
+
+  openNewPlaylistDialog() {
+    const dialogRef = this.dialog.open(NameDialogComponent, { data: { name: '', title: 'New Playlist', placeholder: 'Playlist name' } });
+    dialogRef.afterClosed().subscribe(name => {
+      this.playlistAdded.emit(name);
+    });
   }
 
   openCategoryDialog() {

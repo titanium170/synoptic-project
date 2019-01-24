@@ -9,3 +9,19 @@ button.upload-btn {
   font-size: 0;
   outline: none;
 }
+
+.files {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 0;
+}
+
+.file-buttons {
+  margin-right: 1rem;
+}
+
+.playlists {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 0;
+}

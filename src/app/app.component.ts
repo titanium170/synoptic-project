@@ -4,6 +4,8 @@ import { FileElement } from './file-explorer/models/file-element';
 import { FileService } from './service/file.service';
 import { MediaFile } from './file-explorer/models/media-file';
 import { SaveFile } from './file-explorer/models/save-file';
+import { Playlist } from './file-explorer/models/playlist';
+import { PlaylistService } from './service/playlist.service';
 
 
 @Component({
@@ -19,9 +21,40 @@ export class AppComponent {
   currentPath: string;
   canNavigateUp = false;
 
-  constructor(
-    private fileService: FileService) {
+  playlists$: Observable<Playlist[]>;
 
+  public selectedPlaylist: boolean = false;
+
+  constructor(
+    private fileService: FileService,
+    private playlistService: PlaylistService) {
+    const dummyFile = { name: 'dummy media', path: '', type: '.txt', comment: 'Sample comment' };
+    this.addFile(dummyFile);
+    this.getPlaylists();
+  }
+
+  getPlaylists() {
+    this.playlists$ = this.playlistService.getPlaylists();
+  }
+
+  addPlaylist(name: string) {
+    this.playlistService.addPlaylist(name);
+    this.getPlaylists();
+  }
+
+  updatePlaylist({ media, playlist }: { media: MediaFile, playlist: Playlist }) {
+    this.playlistService.removeMediaItemFromPlaylist(media, playlist);
+    this.getPlaylists();
+  }
+
+  renamePlaylist(names: any) {
+    this.playlistService.renamePlaylist(names.oldName, names.newName);
+    this.getPlaylists();
+  }
+
+  removePlaylist(playlist: Playlist) {
+    this.playlistService.removePlaylist(playlist);
+    this.getPlaylists();
   }
 
   loadSave(saveFile: SaveFile) {
@@ -78,9 +111,12 @@ export class AppComponent {
   }
 
   updateElementMedia(element: FileElement) {
+    this.playlistService.addMediaItemToPlaylists(element.media);
     this.fileService.update(element.id, { media: element.media });
     this.updateFileElementQuery();
   }
+
+
 
   updateFileElementQuery() {
     this.fileElements$ = this.fileService.queryInFolder(this.currentRoot ? this.currentRoot.id : 'root');

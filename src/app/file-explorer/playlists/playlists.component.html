@@ -1,0 +1,35 @@
+<div class="playlists-container" *ngIf="!selectedPlaylist; else playlistContent">
+  <mat-list role="list">
+    <mat-list-item *ngFor="let playlist of playlists">
+      <span class="pointer" (click)="openPlaylist(playlist)">
+        <mat-icon>playlist_play</mat-icon>
+        {{playlist.name}}
+        <span class="item-count">{{(playlist.items?.length || '0') + ' items'}}</span>
+      </span>
+      <span class="spacer pointer" (click)="openPlaylist(playlist)"></span>
+      <mat-icon class="pointer" (click)="openRenameDialog(playlist)">edit</mat-icon>
+      <mat-icon class="pointer" (click)="removePlaylist(playlist)">delete</mat-icon>
+      <mat-divider></mat-divider>
+    </mat-list-item>
+  </mat-list>
+</div>
+<ng-template #playlistContent>
+  <!-- <mat-list role="list">
+    <mat-list-item *ngFor="let item of selectedPlaylist.items">
+      <span (click)="openViewMediaDialog(item)">
+        <mat-icon>music_note</mat-icon>
+        {{item.name}}
+      </span>
+      <span class="spacer" (click)="openViewMediaDialog(item)"></span>
+      <mat-icon class="pointer" (click)="removeMediaFromPlaylist(item, selectedPlaylist)">delete</mat-icon>
+      <mat-divider></mat-divider>
+    </mat-list-item>
+</mat-list> -->
+  <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+    <div class="example-box" *ngFor="let item of selectedPlaylist.items" cdkDrag>
+      <span class="item-content">
+        <mat-icon>music_note</mat-icon>{{item.name}}
+      </span>
+    </div>
+  </div>
+</ng-template>

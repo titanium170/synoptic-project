@@ -1,10 +1,13 @@
 <div style="padding: 100px; height: 100%; box-sizing: border-box;" (drop)="onDrop($event)" (draggable)="onDragOver($event)">
   <mat-card style="height: 100%; box-sizing: border-box; padding:0">
     <mat-card-title>
-      <app-menu-bar [path]="currentPath" [canNavigateUp]="canNavigateUp" (folderAdded)="addFolder($event)" (fileAdded)="addFile($event)" (navigatedUp)="navigateUp()" (saveState)="saveState()" (savedStateLoaded)="loadSave($event)"></app-menu-bar>
+      <app-menu-bar [path]="currentPath" [canNavigateUp]="canNavigateUp" [selectedPlaylist]="selectedPlaylist" (folderAdded)="addFolder($event)" (fileAdded)="addFile($event)" (playlistAdded)="addPlaylist($event)" (playlistClosed)="selectedPlaylist = null"
+        (navigatedUp)="navigateUp()" (saveState)="saveState()" (savedStateLoaded)="loadSave($event)"></app-menu-bar>
     </mat-card-title>
     <mat-card-content>
       <file-explorer [fileElements]="fileElements$ | async" (elementRemoved)="removeElement($event)" (elementRenamed)="renameElement($event)" (elementMediaUpdated)="updateElementMedia($event)" (elementMoved)="moveElement($event)" (navigatedDown)="navigateToFolder($event)"></file-explorer>
+      <mat-divider [vertical]="true"></mat-divider>
+      <app-playlists [playlists]="playlists$ | async" [selectedPlaylist]="selectedPlaylist" (playlistRenamed)="renamePlaylist($event)" (playlistRemoved)="removePlaylist($event)" (playlistSelected)="selectedPlaylist = $event" (playlistUpdated)="updatePlaylist($event)"></app-playlists>
     </mat-card-content>
   </mat-card>
 </div>

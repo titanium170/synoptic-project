@@ -21,6 +21,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
 import { ScrollDispatchModule } from '@angular/cdk/scrolling';
+import { MatDividerModule } from '@angular/material/divider';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 // Components
 import { AppComponent } from './app.component';
@@ -34,6 +36,7 @@ import { CategoryDialogComponent } from './file-explorer/modals/category-dialog/
 
 // External dependencies
 import { NgxElectronModule } from 'ngx-electron';
+import { PlaylistsComponent } from './file-explorer/playlists/playlists.component';
 
 
 
@@ -46,7 +49,8 @@ import { NgxElectronModule } from 'ngx-electron';
     SelectUploadDialogComponent,
     ViewMediaDialogComponent,
     CategoryDialogComponent,
-    MenuBarComponent
+    MenuBarComponent,
+    PlaylistsComponent
   ],
   imports: [
     CommonModule,
@@ -69,7 +73,9 @@ import { NgxElectronModule } from 'ngx-electron';
     MatFormFieldModule,
     ReactiveFormsModule,
     MatListModule,
-    ScrollDispatchModule
+    ScrollDispatchModule,
+    MatDividerModule,
+    DragDropModule
   ],
   providers: [HttpClient],
   bootstrap: [AppComponent],

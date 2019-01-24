@@ -5,6 +5,7 @@ import { FormControl } from '@angular/forms';
 import { Category } from '../../models/category';
 import { Playlist } from '../../models/playlist';
 import { CategoryService } from 'src/app/service/category.service';
+import { PlaylistService } from 'src/app/service/playlist.service';
 
 @Component({
   selector: 'app-view-media-dialog',
@@ -18,21 +19,20 @@ export class ViewMediaDialogComponent implements OnInit {
   public categories = new FormControl();
   public categoryOptions: Category[] = [];
   public playlists = new FormControl();
-  public playlistOptions: Playlist[] = [
-    { name: 'Chill' },
-    { name: 'Studying' },
-    { name: 'Running' },
-    { name: 'Party' }
-  ];
+  public playlistOptions: Playlist[] = [];
 
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public media: MediaFile,
-    private categoryService: CategoryService) { }
+    private categoryService: CategoryService,
+    private playlistService: PlaylistService) { }
 
 
   ngOnInit() {
     this.categoryOptions = this.categoryService.getCategories();
+    this.playlistService.getPlaylists().subscribe((playlists: Playlist[]) => {
+      this.playlistOptions = playlists;
+    });
   }
 
   getPlaylists() {

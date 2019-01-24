@@ -20,3 +20,16 @@
   height: 50px;
   font-size: 50px;
 }
+
+.main-container {
+  min-height: 50px;
+  height: 100%;
+}
+
+.file-name {
+  text-align: center;
+}
+
+mat-grid-list {
+  padding-left: 12px;
+}

@@ -26,14 +26,14 @@ export class CategoryService implements ICategoryService {
     if (!this._categoryExists(name)) {
       const newCategory = { name: name };
       this._categories.push(newCategory);
-      return this._clone(newCategory);
+      return newCategory;
     }
   }
 
   renameCategory(oldName: string, newName: string): Category {
     const category = this.get(oldName);
     category.name = newName;
-    return this._clone(category);
+    return category;
   }
 
   removeCategory(category: string | Category): void {
@@ -45,12 +45,17 @@ export class CategoryService implements ICategoryService {
     }
     const index = this._categories.map(c => c.name).indexOf(name);
     this._categories.splice(index, 1);
+    this._removeCategoryReferences(name);
+  }
+
+  private _removeCategoryReferences(name: string) {
+    delete this.get(name).name;
   }
 
   getCategories(): Category[] {
     const categories: Category[] = [];
     for (const category of this._categories) {
-      categories.push(this._clone(category));
+      categories.push(category);
     }
     return categories;
   }
@@ -61,10 +66,6 @@ export class CategoryService implements ICategoryService {
 
   private _categoryExists(name: string): boolean {
     return this._categories.map(c => c.name).indexOf(name) > -1;
-  }
-
-  private _clone(category: Category): Category {
-    return JSON.parse(JSON.stringify(category));
   }
 
 }

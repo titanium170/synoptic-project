@@ -28,7 +28,7 @@ export class FileService implements IFileService {
   add(fileElement: FileElement) {
     if (!this.fileExists(fileElement)) {
       fileElement.id = (fileElement.id ? fileElement.id : v4()); // handles previously saved files
-      this.fileElementMap.set(fileElement.id, this.clone(fileElement));
+      this.fileElementMap.set(fileElement.id, fileElement);
       return fileElement;
     }
   }
@@ -39,7 +39,11 @@ export class FileService implements IFileService {
 
   update(id: string, update: Partial<FileElement>) {
     let element = this.get(id);
-    element = Object.assign(element, update);
+    if (update.hasOwnProperty('media')) {
+      element.media = update.media;
+    } else {
+      element.name = update.name;
+    }
     this.fileElementMap.set(element.id, element);
   }
 
@@ -69,7 +73,7 @@ export class FileService implements IFileService {
     const result: FileElement[] = [];
     this.fileElementMap.forEach(element => {
       if (element.parent === folderId) {
-        result.push(this.clone(element));
+        result.push(element);
       }
     });
     if (!this.querySubject) {
@@ -89,9 +93,5 @@ export class FileService implements IFileService {
     return arr.filter((fe: FileElement) => {
       return fe.name === file.name && fe.parent === file.parent;
     }).length > 0;
-  }
-
-  private clone(element: FileElement) {
-    return JSON.parse(JSON.stringify(element));
   }
 }
