@@ -37,9 +37,8 @@ export class PlaylistsComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<string[]>) {
-    const items = this.selectedPlaylistItems;
-    moveItemInArray(items, event.previousIndex, event.currentIndex);
-    console.log('items: ', items);
+    moveItemInArray(this.selectedPlaylist.itemOrder, event.previousIndex, event.currentIndex);
+    console.log('items: ', this.selectedPlaylist.itemOrder);
   }
 
   openPlaylist(playlist: Playlist) {

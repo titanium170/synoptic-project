@@ -53,7 +53,12 @@ export class CategoryService implements ICategoryService {
   updateReferences() {
     const items = this.mediaService.getMediaFiles();
     for (const item of items) {
-      item.categories.map(c => c = this._categories.find(_c => _c.name === c.name));
+      if (item.categories) {
+        item.categories = item.categories
+          .map(c => c = this._categories
+            .find(_c => _c.name === c.name)
+          );
+      }
     }
   }
 

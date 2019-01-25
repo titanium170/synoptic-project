@@ -39,7 +39,31 @@ export class PlaylistService implements IPlaylistService {
         }
       }
     }
-    return items;
+    return this.orderItems(items, playlist);
+  }
+
+  private orderItems(items: MediaFile[], playlist: Playlist): MediaFile[] {
+    let orderedItems = [];
+    if (playlist.itemOrder) {
+      const matchedItems = items.filter(i => playlist.itemOrder.includes(i.name));
+      const unmatchedItems = items.filter(i => !playlist.itemOrder.includes(i.name));
+      console.log('matchedItems: ', matchedItems);
+      console.log('unmatchedItems: ', unmatchedItems);
+      for (const orderItem of playlist.itemOrder) {
+        orderedItems.push(matchedItems.find(i => i.name === orderItem));
+      }
+      console.log('orderedItems before concat: ', orderedItems);
+      for (const unmatched of unmatchedItems) {
+        playlist.itemOrder.push(unmatched.name);
+        orderedItems.push(unmatched);
+      }
+    } else {
+      playlist.itemOrder = items.map(i => i.name);
+      orderedItems = items;
+    }
+    console.log('playlist.ItemOrder: ', playlist.itemOrder);
+    console.log('ordered items: ', orderedItems);
+    return orderedItems;
   }
 
   getPlaylists(): Playlist[] {
@@ -69,7 +93,12 @@ export class PlaylistService implements IPlaylistService {
   updateReferences() {
     const items = this.mediaService.getMediaFiles();
     for (const item of items) {
-      item.playlists.map(p => p = this._playlists.find(_p => _p.name === p.name));
+      if (item.playlists) {
+        item.playlists = item.playlists
+          .map(p => p = this._playlists
+            .find(_p => _p.name === p.name)
+          );
+      }
     }
   }
 
