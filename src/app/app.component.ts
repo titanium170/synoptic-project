@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FileElement } from './file-explorer/models/file-element';
-import { FileService } from './service/file.service';
+import { FileService } from './services/file/file.service';
+import { MediaFile } from './file-explorer/models/media-file';
+import { SaveFile } from './file-explorer/models/save-file';
+import { Playlist } from './file-explorer/models/playlist';
+import { PlaylistService } from './services/playlist/playlist.service';
 
 
 @Component({
@@ -12,18 +16,64 @@ import { FileService } from './service/file.service';
 export class AppComponent {
   title = 'app';
 
-  fileElements: Observable<FileElement[]>;
+  fileElements$: Observable<FileElement[]>;
   currentRoot: FileElement;
   currentPath: string;
   canNavigateUp = false;
 
-  constructor(private fileService: FileService) {
+  playlists: Playlist[];
 
+  public selectedPlaylist = false;
+
+  constructor(
+    private fileService: FileService,
+    private playlistService: PlaylistService) {
+    this.getPlaylists();
   }
 
 
+
+  // Playlist operations
+
+  getPlaylists() {
+    this.playlists = this.playlistService.getPlaylists();
+  }
+
+  addPlaylist(name: string) {
+    this.playlistService.addPlaylist(name);
+    this.getPlaylists();
+  }
+
+  renamePlaylist(names: any) {
+    this.playlistService.renamePlaylist(names.oldName, names.newName);
+    this.getPlaylists();
+  }
+
+  removePlaylist(playlist: Playlist) {
+    this.playlistService.removePlaylist(playlist);
+    this.getPlaylists();
+  }
+
+
+
+  // File service operations
+
   addFolder(folder: { name: string }) {
-    this.fileService.add({ isFolder: true, name: folder.name, parent: this.currentRoot ? this.currentRoot.id : 'root' });
+    this.fileService.add({
+      isFolder: true,
+      name: folder.name,
+      parent: this.currentRoot ? this.currentRoot.id : 'root'
+    });
+    this.updateFileElementQuery();
+  }
+
+  addFile(file: MediaFile) {
+    this.fileService.add({
+      isFolder: false,
+      name: file.name,
+      parent: this.currentRoot ? this.currentRoot.id : 'root',
+      media: file
+    });
     this.updateFileElementQuery();
   }
 
@@ -42,8 +92,13 @@ export class AppComponent {
     this.updateFileElementQuery();
   }
 
+  updateElementMedia(element: FileElement) {
+    this.fileService.update(element.id, { media: element.media });
+    this.updateFileElementQuery();
+  }
+
   updateFileElementQuery() {
-    this.fileElements = this.fileService.queryInFolder(this.currentRoot ? this.currentRoot.id : 'root');
+    this.fileElements$ = this.fileService.queryInFolder(this.currentRoot ? this.currentRoot.id : 'root');
   }
 
   navigateUp() {
@@ -73,14 +128,10 @@ export class AppComponent {
 
   popFromPath(path: string) {
     let p = path ? path : '';
-    let split = p.split('/');
+    const split = p.split('/');
     split.splice(split.length - 2, 1);
     p = split.join('/');
     return p;
   }
-  // fileToUpload: File = null;
-  //
-  // handleFileInput(files: FileList) {
-  //   this.fileToUpload = files.item(0);
-  // }
+
 }

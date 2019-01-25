@@ -1,30 +1,44 @@
-<div class="container" fxFlex fxLayout="row" fxLayoutAlign="space-between stretch">
+<div class="main-container">
 
-  <div class="content" fxFlex fxLayout="row">
+  <div class="container" fxFlex fxLayout="row" fxLayoutAlign="space-between stretch">
 
-    <mat-grid-list cols="8" rowHeight="100px" fxFlex>
+    <div class="content" fxFlex fxLayout="row">
 
-      <mat-grid-tile *ngFor="let element of fileElements" class="file-or-folder">
-        <span [matMenuTriggerFor]="rootMenu" [matMenuTriggerData]="{element: element}" #menuTrigger="matMenuTrigger">
-        </span>
-        <div fxLayout="column" fxLayoutAlign="space-between center" (click)="navigate(element)" (contextmenu)="openMenu($event, element, menuTrigger)">
+      <mat-grid-list cols="5" rowHeight="100px" fxFlex>
 
-          <mat-icon color="primary" class="file-or-folder-icon pointer" *ngIf="element.isFolder">
-            folder
-          </mat-icon>
-          <mat-icon color="primary" class="file-or-folder-icon pointer" *ngIf="!element.isFolder">
-            insert_drive_file
-          </mat-icon>
+        <mat-grid-tile *ngFor="let element of fileElements" class="file-or-folder">
+          <span [matMenuTriggerFor]="rootMenu" [matMenuTriggerData]="{element: element}" #menuTrigger="matMenuTrigger">
+          </span>
+          <div fxLayout="column" fxLayoutAlign="space-between center" (click)="navigate(element)" (contextmenu)="openMenu($event, element, menuTrigger)">
 
-          <span>{{element.name}}</span>
-        </div>
-      </mat-grid-tile>
-    </mat-grid-list>
+            <mat-icon color="primary" class="file-or-folder-icon pointer" *ngIf="element.isFolder">
+              folder
+            </mat-icon>
+            <ng-container *ngIf="!element.isFolder">
+              <img *ngIf="element.media.image?.path; else noImage" class="pointer" [src]="'file://' + element.media.image.path" width="50" height="50" />
+              <ng-template #noImage>
+                <mat-icon color="primary" class="file-or-folder-icon pointer">
+                  insert_drive_file
+                </mat-icon>
+              </ng-template>
+            </ng-container>
+
+
+            <span class="file-name">{{element.media?.name || element.name}}</span>
+          </div>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
   </div>
+
 </div>
 
 <mat-menu #rootMenu="matMenu" [overlapTrigger]="false">
   <ng-template matMenuContent let-element="element">
+    <button mat-menu-item (click)="openViewMediaDialog(element)">
+      <mat-icon>search</mat-icon>
+      <span>View</span>
+    </button>
     <button mat-menu-item [matMenuTriggerFor]="moveToMenu" [matMenuTriggerData]="{self: element}">
       <mat-icon>open_with</mat-icon>
       <span>Move To</span>
@@ -39,6 +53,7 @@
     </button>
   </ng-template>
 </mat-menu>
+
 
 <mat-menu #moveToMenu="matMenu">
   <ng-template matMenuContent let-self="self">

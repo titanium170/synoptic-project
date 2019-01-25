@@ -1,0 +1,33 @@
+<h1 mat-dialog-title>Upload files</h1>
+
+<mat-dialog-content>
+  <h4>Select type:</h4>
+  <mat-button-toggle-group>
+    <mat-button-toggle mat-raised-button [checked]="!isFolder" (click)="isFolder = false">
+      <mat-icon>insert_drive_file</mat-icon>
+      File(s)
+    </mat-button-toggle>
+    <mat-button-toggle mat-raised-button [checked]="isFolder" (click)="isFolder = true">
+      <mat-icon>folder</mat-icon>
+      Folder
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+  <br />
+  <mat-form-field>
+    <mat-select placeholder="File Type (optional)" [formControl]="types" multiple>
+      <mat-select-trigger>
+        {{types.value ? types.value[0] : ''}}
+        <span *ngIf="types.value?.length > 1" class="example-additional-selection">
+          (+{{types.value.length - 1}} {{types.value?.length === 2 ? 'other' : 'others'}})
+        </span>
+      </mat-select-trigger>
+      <mat-option *ngFor="let type of typeOptions" [value]="type">{{type}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button mat-dialog-close>Close</button>
+  <button mat-raised-button [mat-dialog-close]="{ 'isFolder': isFolder, 'fileTypes': types.value }" color="primary">OK</button>
+</mat-dialog-actions>

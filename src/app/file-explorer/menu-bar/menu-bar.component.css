@@ -1,15 +1,6 @@
-.upload {
+.menu-btn {
   margin-left: 10px;
   margin-right: 10px;
-}
-
-.new-folder {
-  margin-left: 10px;
-  margin-right: 10px;
-}
-
-.spacer {
-  flex: 1 1 auto;
 }
 
 button.upload-btn {
@@ -17,4 +8,29 @@ button.upload-btn {
   border: none !important;
   font-size: 0;
   outline: none;
+}
+
+.path-name {
+  margin-left: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  direction: rtl;
+  max-width: 240px;
+}
+
+.files {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 0;
+}
+
+.file-buttons {
+  margin-right: 1rem;
+}
+
+.playlists {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 0;
 }

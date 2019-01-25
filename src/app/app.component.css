@@ -1,0 +1,16 @@
+mat-card-title {
+  margin-bottom: 0px;
+}
+
+mat-card-content {
+  display: flex;
+}
+
+file-explorer {
+  flex: 1 1 0;
+  height: 100%;
+}
+
+app-playlists {
+  flex: 1 1 0;
+}

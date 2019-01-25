@@ -11,7 +11,6 @@ export class NewFolderDialogComponent implements OnInit {
 
   constructor() { }
 
-
   ngOnInit() {
   }
 

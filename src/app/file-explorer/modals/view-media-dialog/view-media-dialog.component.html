@@ -1,0 +1,59 @@
+<mat-toolbar>
+  <h1 mat-dialog-title>{{media.name}}{{isEditing ? ' (editing)' : ''}}</h1>
+  <span class="spacer"></span>
+  <mat-icon class="pointer" (click)="isEditing = true">edit</mat-icon>
+</mat-toolbar>
+
+<mat-dialog-content>
+  <div class="text-container" *ngIf="!isEditing">
+    <p class="mat-body-1">Name: {{media.name}}</p>
+    <p class="mat-body-1">Path: {{media.path}}</p>
+    <p class="mat-body-1">Type: {{media.type}}</p>
+    <p class="mat-body-1">Comment: {{media.comment || '' }}</p>
+    <p class="mat-body-1">Categories: {{ getCategories() || 'none'}}</p>
+    <p class="mat-body-1">Playlists: {{ getPlaylists() || 'none' }}</p>
+    <p class="mat-body-1">Image: {{ media.image?.name || 'none'}}</p>
+    <img *ngIf="media.image?.path" [src]="'file://' + media.image.path" width="100" height="100" />
+  </div>
+  <div class="form-container" *ngIf="isEditing">
+    <mat-form-field class="example-full-width">
+      <input matInput placeholder="Name" [(ngModel)]="media.name">
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <input matInput placeholder="Comment" [(ngModel)]="media.comment">
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <mat-select placeholder="Categories (optional)" [formControl]="categories" multiple>
+        <mat-select-trigger *ngIf="categories">
+          {{categories.value ? categories.value[0].name : 'none'}}
+          <span *ngIf="categories.value?.length > 1" class="example-additional-selection">
+            (+{{categories.value.length - 1}} {{categories.value?.length === 2 ? 'other' : 'others'}})
+          </span>
+        </mat-select-trigger>
+        <mat-option *ngFor="let category of categoryOptions" [value]="category">{{category.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <mat-select placeholder="Playlists (optional)" [formControl]="playlists" multiple>
+        <mat-select-trigger *ngIf="playlists">
+          {{playlists.value ? playlists.value[0].name : 'none'}}
+          <span *ngIf="playlists.value?.length > 1" class="example-additional-selection">
+            (+{{playlists.value.length - 1}} {{playlists.value?.length === 2 ? 'other' : 'others'}})
+          </span>
+        </mat-select-trigger>
+        <mat-option *ngFor="let playlist of playlistOptions" [value]="playlist">{{playlist.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="image">
+      <input matInput placeholder="Image" [disabled]="media.image ? (media.image.path ? false :  true) : true" [ngModel]="media.image?.name" (ngModelChange)="media.image = { name: $event, path: media.image?.path}">
+      <button *ngIf="media.image" matSuffix mat-raised-button (click)="deleteImage()" color="warn">X</button>
+      <button matSuffix mat-raised-button (click)="uploadImage()">Select image</button>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button [mat-dialog-close]="getUpdatedMedia()" color="primary">OK</button>
+</mat-dialog-actions>

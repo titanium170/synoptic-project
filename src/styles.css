@@ -4,3 +4,11 @@
 .pointer {
   cursor: pointer;
 }
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
