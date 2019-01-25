@@ -8,8 +8,8 @@ import { SaveFile } from '../../file-explorer/models/save-file'
 
 
 export interface ILoadService {
-  openLoadFileDialog();
-  loadSave(saveFile: SaveFile);
+  openLoadFileDialog(callback: Function);
+  loadSave(saveFile: SaveFile, done: Function);
 }
 
 @Injectable({
@@ -27,7 +27,7 @@ export class LoadService implements ILoadService {
   ) { }
 
 
-  openLoadFileDialog() {
+  openLoadFileDialog(callback: Function) {
     this.electron.ipcRenderer.send('open-save-file-dialog', ['json']);
     this.electron.ipcRenderer.on('selected-save-file', (event: Event, file: SaveFile) => {
       if (!file) {
@@ -38,13 +38,13 @@ export class LoadService implements ILoadService {
       // So change detection will not be run automatically
       // NgZone.run() is used to run change detection manually
       this.zone.run(() => {
-        this.loadSave(file);
+        this.loadSave(file, callback);
       });
       this.electron.ipcRenderer.removeAllListeners('selected-save-file');
     })
   }
 
-  loadSave(saveFile: SaveFile) {
+  loadSave(saveFile: SaveFile, done: Function) {
     this.fileService.clearElements();
     for (const file of saveFile.files) {
       this.fileService.add(file);
@@ -60,6 +60,7 @@ export class LoadService implements ILoadService {
       this.playlistService.addPlaylist(playlist.name);
     }
     this.playlistService.updateReferences();
+    done();
   }
 
 }

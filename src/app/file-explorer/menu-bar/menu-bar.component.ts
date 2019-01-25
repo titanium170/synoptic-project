@@ -24,6 +24,7 @@ export class MenuBarComponent implements OnInit {
   @Output() fileAdded = new EventEmitter<MediaFile>();
   @Output() playlistAdded = new EventEmitter<string>();
   @Output() playlistClosed = new EventEmitter();
+  @Output() saveLoaded = new EventEmitter();
   @Output() navigatedUp = new EventEmitter();
 
 
@@ -75,7 +76,9 @@ export class MenuBarComponent implements OnInit {
   }
 
   openLoadFileDialog() {
-    this.loadService.openLoadFileDialog();
+    this.loadService.openLoadFileDialog(() => {
+      this.saveLoaded.emit();
+    });
   }
 
   openSaveFileDialog() {

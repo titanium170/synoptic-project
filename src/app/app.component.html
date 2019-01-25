@@ -2,7 +2,7 @@
   <mat-card style="height: 100%; box-sizing: border-box; padding:0">
     <mat-card-title>
       <app-menu-bar [path]="currentPath" [canNavigateUp]="canNavigateUp" [selectedPlaylist]="selectedPlaylist" (folderAdded)="addFolder($event)" (fileAdded)="addFile($event)" (playlistAdded)="addPlaylist($event)" (playlistClosed)="selectedPlaylist = null"
-        (navigatedUp)="navigateUp()"></app-menu-bar>
+        (navigatedUp)="navigateUp()" (saveLoaded)="updateFileElementQuery()"></app-menu-bar>
     </mat-card-title>
     <mat-card-content>
       <file-explorer [fileElements]="fileElements$ | async" (elementRemoved)="removeElement($event)" (elementRenamed)="renameElement($event)" (elementMediaUpdated)="updateElementMedia($event)" (elementMoved)="moveElement($event)" (navigatedDown)="navigateToFolder($event)"></file-explorer>
