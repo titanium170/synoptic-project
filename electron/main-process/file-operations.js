@@ -5,6 +5,9 @@ const {
 const fs = require('fs');
 const path = require('path');
 const recursive = require('recursive-readdir');
+const {
+  inspect
+} = require('util');
 
 ipcMain.on('open-file-dialog', (event, fileTypes) => {
   dialog.showOpenDialog({
@@ -51,9 +54,23 @@ ipcMain.on('open-folder-dialog', (event, fileTypes) => {
   })
 })
 
-ipcMain.on('save-file-dialog', (event, fileTypes, fileContent) => {
 
-  const content = 'Test content';
+ipcMain.on('open-image-dialog', (event, fileTypes) => {
+  dialog.showOpenDialog({
+    filters: [{
+      name: 'Images',
+      extensions: fileTypes
+    }],
+    properties: ['openFile']
+  }, (files) => {
+    if (files) {
+      console.log('files: ', files);
+      event.sender.send('selected-files', files[0])
+    }
+  })
+})
+
+ipcMain.on('save-file-dialog', (event, fileTypes, saveFile) => {
 
   dialog.showSaveDialog({
     defaultPath: 'saveFile.json',
@@ -66,7 +83,8 @@ ipcMain.on('save-file-dialog', (event, fileTypes, fileContent) => {
       console.log('File creation cancelled');
       return;
     }
-
+    const fileContent = JSON.stringify(saveFile);
+    console.log('fileContent: ', fileContent);
     fs.writeFile(filename, fileContent, (err) => {
       if (err) {
         console.log('Error during file creation: ', err.message);
@@ -94,9 +112,11 @@ ipcMain.on('open-save-file-dialog', (event, fileTypes) => {
           console.log('An error occurred: ', err.message);
           return;
         }
+
         const saveFile = JSON.parse(data);
-        event.sender.send('selected-save-file', saveFile);
         console.log('saveFile: ', saveFile);
+        event.sender.send('selected-save-file', saveFile);
+
       });
     }
   })

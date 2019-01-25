@@ -28,6 +28,16 @@
 
 .file-name {
   text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80px;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+file-name:hover {
+  white-space: normal;
+  overflow: visible;
 }
 
 mat-grid-list {

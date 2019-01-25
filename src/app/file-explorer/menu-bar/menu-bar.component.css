@@ -10,6 +10,15 @@ button.upload-btn {
   outline: none;
 }
 
+.path-name {
+  margin-left: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  direction: rtl;
+  max-width: 240px;
+}
+
 .files {
   display: flex;
   flex-direction: row;

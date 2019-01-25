@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Category } from '../file-explorer/models/category';
+import { MediaService } from './media.service';
 
 export interface ICategoryService {
   addCategory(name: string): Category;
   removeCategory(category: string | Category): void;
   getCategories(): Category[];
   get(name: string): Category;
+  updateReferences();
 }
 
 @Injectable({
@@ -20,7 +22,7 @@ export class CategoryService implements ICategoryService {
     { name: 'Pop' }
   ];
 
-  constructor() { }
+  constructor(private mediaService: MediaService) { }
 
   addCategory(name: string): Category {
     if (!this._categoryExists(name)) {
@@ -48,8 +50,24 @@ export class CategoryService implements ICategoryService {
     this._removeCategoryReferences(name);
   }
 
+  updateReferences() {
+    const items = this.mediaService.getMediaFiles();
+    for (const item of items) {
+      item.categories.map(c => c = this._categories.find(_c => _c.name === c.name));
+    }
+  }
+
   private _removeCategoryReferences(name: string) {
-    delete this.get(name).name;
+    const mediaFiles = this.mediaService.getMediaFiles()
+      .filter(mf => {
+        if (mf.categories) {
+          return mf.categories.map(c => c.name).includes(name)
+        }
+        return false;
+      });
+    for (const mf of mediaFiles) {
+      mf.categories = mf.categories.filter(c => c.name !== name);
+    }
   }
 
   getCategories(): Category[] {

@@ -1,13 +1,13 @@
-import { Component, OnInit, Output, EventEmitter, Input, ViewChild, ElementRef, NgZone } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, NgZone } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NewFolderDialogComponent } from '../modals/new-folder-dialog/new-folder-dialog.component';
 import { MediaFile } from '../models/media-file';
 import { ElectronService } from 'ngx-electron';
-import { SelectUploadDialogComponent } from '../modals/select-upload-dialog/select-upload-dialog.component';
 import { SaveFile } from '../models/save-file';
 import { CategoryDialogComponent } from '../modals/category-dialog/category-dialog.component';
 import { NameDialogComponent } from '../modals/name-dialog/name-dialog.component';
 import { Playlist } from '../models/playlist';
+import { MediaService } from 'src/app/service/media.service';
 
 @Component({
   selector: 'app-menu-bar',
@@ -29,11 +29,11 @@ export class MenuBarComponent implements OnInit {
   @Output() savedStateLoaded = new EventEmitter<SaveFile>();
 
 
-
   constructor(
     public dialog: MatDialog,
     private electron: ElectronService,
-    private zone: NgZone) { }
+    private zone: NgZone,
+    private mediaService: MediaService) { }
 
   ngOnInit() {
 
@@ -70,57 +70,15 @@ export class MenuBarComponent implements OnInit {
   }
 
   openFileUploadDialog() {
-    const dialogRef = this.dialog.open(SelectUploadDialogComponent);
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        if (res.isFolder) {
-          this.electron.ipcRenderer.send('open-folder-dialog', res.fileTypes);
-        } else {
-          this.electron.ipcRenderer.send('open-file-dialog', res.fileTypes);
-        }
-        this.electron.ipcRenderer.on('selected-files', (event: Event, files: string[]) => {
-          if (!files.length) {
-            console.log('No files were selected');
-            return;
-          }
-          // Electron is running outside of the angular zone (NgZone)
-          // So change detection will not be run automatically
-          // NgZone.run() is used to run change detection manually
-          this.zone.run(() => {
-            this.handleFileUpload(files);
-
-          });
-          this.electron.ipcRenderer.removeAllListeners('selected-files');
-        })
-      }
-    })
+    this.mediaService.openFileUploadDialog((files: string[]) => {
+      this.handleFileUpload(files);
+    });
   }
 
   handleFileUpload(files: string[]) {
-    // TODO: move looping to addFile()
     for (const file of files) {
-      this.fileAdded.emit(this.createMediaFile(file));
+      this.fileAdded.emit(this.mediaService.createMediaFile(file));
     }
-  }
-
-  createMediaFile(filePath: string) {
-    const name = this.getFileNameFromPath(filePath);
-    const path = filePath;
-    const type = this.getFileTypeFromPath(filePath);
-
-    return { name: name, path: path, type: type };
-  }
-
-
-
-  getFileNameFromPath(path: string) {
-    const fileName = path.replace(/^.*[\\\/]/, '');
-    return fileName.replace(/\.[^/.]+$/, '');
-  }
-
-  getFileTypeFromPath(path: string) {
-    const regex: RegExp = /(?:\.([^.]+))?$/;
-    return regex.exec(path)[1];
   }
 
   openSaveFileDialog() {
@@ -147,6 +105,5 @@ export class MenuBarComponent implements OnInit {
       this.electron.ipcRenderer.removeAllListeners('selected-save-file');
     })
   }
-
 
 }

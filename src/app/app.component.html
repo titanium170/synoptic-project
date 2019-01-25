@@ -7,7 +7,7 @@
     <mat-card-content>
       <file-explorer [fileElements]="fileElements$ | async" (elementRemoved)="removeElement($event)" (elementRenamed)="renameElement($event)" (elementMediaUpdated)="updateElementMedia($event)" (elementMoved)="moveElement($event)" (navigatedDown)="navigateToFolder($event)"></file-explorer>
       <mat-divider [vertical]="true"></mat-divider>
-      <app-playlists [playlists]="playlists$ | async" [selectedPlaylist]="selectedPlaylist" (playlistRenamed)="renamePlaylist($event)" (playlistRemoved)="removePlaylist($event)" (playlistSelected)="selectedPlaylist = $event" (playlistUpdated)="updatePlaylist($event)"></app-playlists>
+      <app-playlists [playlists]="playlists" [selectedPlaylist]="selectedPlaylist" (playlistRenamed)="renamePlaylist($event)" (playlistRemoved)="removePlaylist($event)" (playlistSelected)="selectedPlaylist = $event"></app-playlists>
     </mat-card-content>
   </mat-card>
 </div>

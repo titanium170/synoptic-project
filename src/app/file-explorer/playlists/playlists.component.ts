@@ -5,6 +5,7 @@ import { NameDialogComponent } from '../modals/name-dialog/name-dialog.component
 import { MediaFile } from '../models/media-file';
 import { ViewMediaDialogComponent } from '../modals/view-media-dialog/view-media-dialog.component';
 import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
+import { PlaylistService } from 'src/app/service/playlist.service';
 
 
 
@@ -21,19 +22,29 @@ export class PlaylistsComponent implements OnInit {
   @Output() playlistSelected = new EventEmitter<Playlist>();
   @Output() playlistRenamed = new EventEmitter<{ oldName: string, newName: string }>();
   @Output() playlistRemoved = new EventEmitter<Playlist>();
-  // @Output() playlistUpdated = new EventEmitter<{ media: MediaFile, playlist: Playlist }>();
 
-  constructor(private dialog: MatDialog) { }
+
+  public selectedPlaylistItems: MediaFile[];
+
+  constructor(
+    private dialog: MatDialog,
+    private playlistService: PlaylistService) { }
 
   ngOnInit() { }
 
+  getItems(playlist: Playlist): MediaFile[] {
+    return this.playlistService.getItems(playlist);
+  }
+
   drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.selectedPlaylist.items, event.previousIndex, event.currentIndex);
-    console.log('items: ', this.selectedPlaylist.items);
+    const items = this.selectedPlaylistItems;
+    moveItemInArray(items, event.previousIndex, event.currentIndex);
+    console.log('items: ', items);
   }
 
   openPlaylist(playlist: Playlist) {
     this.playlistSelected.emit(playlist);
+    this.selectedPlaylistItems = this.getItems(playlist);
   }
 
   openViewMediaDialog(media: MediaFile) {
@@ -58,11 +69,8 @@ export class PlaylistsComponent implements OnInit {
   }
 
   removeMediaFromPlaylist(media: MediaFile, playlist: Playlist) {
-    let index = media.playlists.map(p => p.name).indexOf(playlist.name);
+    const index = media.playlists.map(p => p.name).indexOf(playlist.name);
     media.playlists.splice(index, 1);
-    index = playlist.items.indexOf(media);
-    playlist.items.splice(index, 1);
-    // this.playlistUpdated.emit({ media: media, playlist: playlist });
   }
 
 }

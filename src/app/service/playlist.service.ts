@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import { Playlist } from '../file-explorer/models/playlist';
 import { Observable, of } from 'rxjs';
 import { MediaFile } from '../file-explorer/models/media-file';
+import { MediaService } from './media.service';
 
 export interface IPlaylistService {
-  getPlaylists(): Observable<Playlist[]>;
+  getPlaylists(): Playlist[];
   addPlaylist(name: string);
   renamePlaylist(oldName: string, newName: string);
   removePlaylist(playlist: Playlist);
-  addMediaItemToPlaylists(item: MediaFile);
+  getItems(playlist: Playlist): MediaFile[];
+  updateReferences();
 }
 
 @Injectable({
@@ -17,26 +19,31 @@ export interface IPlaylistService {
 export class PlaylistService implements IPlaylistService {
 
   private _playlists: Playlist[] = [
-    {
-      name: 'Running', items: [
-        { name: 'dummy media1', path: '', type: '.txt', comment: 'Sample comment' },
-        { name: 'dummy media2', path: '', type: '.txt', comment: 'Sample comment' },
-        { name: 'dummy media3', path: '', type: '.txt', comment: 'Sample comment' },
-        { name: 'dummy media4', path: '', type: '.txt', comment: 'Sample comment' },
-        { name: 'dummy media5', path: '', type: '.txt', comment: 'Sample comment' }
-      ]
-    },
+    { name: 'Running' },
     { name: 'Studying' },
     { name: 'Chill' },
     { name: 'Party' }
   ];
 
-  constructor() {
+  constructor(private mediaService: MediaService) {
 
   }
 
-  getPlaylists(): Observable<Playlist[]> {
-    return of(this._playlists);
+  getItems(playlist: Playlist): MediaFile[] {
+    const items = [];
+    const mediaFiles = this.mediaService.getMediaFiles();
+    for (const mf of mediaFiles) {
+      if (mf.playlists) {
+        if (mf.playlists.map(p => p.name).includes(playlist.name)) {
+          items.push(mf);
+        }
+      }
+    }
+    return items;
+  }
+
+  getPlaylists(): Playlist[] {
+    return this._playlists;
   }
 
   addPlaylist(name: string) {
@@ -59,40 +66,22 @@ export class PlaylistService implements IPlaylistService {
     this._playlists.splice(index, 1);
   }
 
+  updateReferences() {
+    const items = this.mediaService.getMediaFiles();
+    for (const item of items) {
+      item.playlists.map(p => p = this._playlists.find(_p => _p.name === p.name));
+    }
+  }
+
   private _removePlaylistReferences(playlist: Playlist) {
-    for (const item of playlist.items) {
+    for (const item of this.getItems(playlist)) {
       const index = item.playlists.map(p => p.name).indexOf(playlist.name);
       item.playlists.splice(index, 1);
     }
   }
 
-  addMediaItemToPlaylists(item: MediaFile) {
-    if (item.playlists && item.playlists.length) {
-      for (const playlist of item.playlists) {
-        this._addItem(this.get(playlist), item);
-      }
-    }
-  }
-
   get(playlist: Playlist) {
     return this._playlists.find(p => p.name === playlist.name);
-  }
-
-  removeMediaItemFromPlaylist(item: MediaFile, playlist: Playlist) {
-    const items: MediaFile[] = this.get(playlist).items;
-    items.splice(items.indexOf(item), 1);
-  }
-
-  private _addItem(playlist: Playlist, item: MediaFile) {
-    if (playlist.items && !this._itemExists(item, playlist.items)) {
-      playlist.items.push(item);
-    } else {
-      playlist.items = [item];
-    }
-  }
-
-  private _itemExists(item: MediaFile, items: MediaFile[]): boolean {
-    return items.indexOf(item) > -1;
   }
 
   private _playlistExists(name: string): boolean {

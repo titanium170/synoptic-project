@@ -6,6 +6,7 @@ import { Category } from '../../models/category';
 import { Playlist } from '../../models/playlist';
 import { CategoryService } from 'src/app/service/category.service';
 import { PlaylistService } from 'src/app/service/playlist.service';
+import { MediaService } from 'src/app/service/media.service';
 
 @Component({
   selector: 'app-view-media-dialog',
@@ -25,15 +26,15 @@ export class ViewMediaDialogComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public media: MediaFile,
     private categoryService: CategoryService,
-    private playlistService: PlaylistService) { }
+    private playlistService: PlaylistService,
+    private mediaService: MediaService) { }
 
 
   ngOnInit() {
     this.categoryOptions = this.categoryService.getCategories();
-    this.playlistService.getPlaylists().subscribe((playlists: Playlist[]) => {
-      this.playlistOptions = playlists;
-    });
+    this.playlistOptions = this.playlistService.getPlaylists();
   }
+
 
   getPlaylists() {
     if (this.media.playlists) {
@@ -49,6 +50,15 @@ export class ViewMediaDialogComponent implements OnInit {
       return categories.join(', ');
     }
     return [];
+  }
+
+
+  uploadImage() {
+    this.mediaService.openImageUploadDialog(this.media);
+  }
+
+  deleteImage() {
+    delete this.media.image;
   }
 
   getUpdatedMedia() {

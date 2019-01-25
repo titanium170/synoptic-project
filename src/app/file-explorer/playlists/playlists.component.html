@@ -4,7 +4,7 @@
       <span class="pointer" (click)="openPlaylist(playlist)">
         <mat-icon>playlist_play</mat-icon>
         {{playlist.name}}
-        <span class="item-count">{{(playlist.items?.length || '0') + ' items'}}</span>
+        <span class="item-count">{{(getItems(playlist)?.length || '0') + ' items'}}</span>
       </span>
       <span class="spacer pointer" (click)="openPlaylist(playlist)"></span>
       <mat-icon class="pointer" (click)="openRenameDialog(playlist)">edit</mat-icon>
@@ -14,22 +14,23 @@
   </mat-list>
 </div>
 <ng-template #playlistContent>
-  <!-- <mat-list role="list">
-    <mat-list-item *ngFor="let item of selectedPlaylist.items">
-      <span (click)="openViewMediaDialog(item)">
-        <mat-icon>music_note</mat-icon>
-        {{item.name}}
-      </span>
-      <span class="spacer" (click)="openViewMediaDialog(item)"></span>
-      <mat-icon class="pointer" (click)="removeMediaFromPlaylist(item, selectedPlaylist)">delete</mat-icon>
-      <mat-divider></mat-divider>
-    </mat-list-item>
-</mat-list> -->
   <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-    <div class="example-box" *ngFor="let item of selectedPlaylist.items" cdkDrag>
+    <div class="example-box" *ngFor="let item of getItems(selectedPlaylist)" cdkDrag>
       <span class="item-content">
-        <mat-icon>music_note</mat-icon>{{item.name}}
+        <img mat-card-avatar *ngIf="item.image?.path; else noImage" [src]="'file://' + item.image.path" width="62" height="62" />{{item.name}}
+        <span class="spacer"></span>
+        <mat-icon class="pointer" (click)="removeMediaFromPlaylist(item, selectedPlaylist)">delete</mat-icon>
       </span>
     </div>
   </div>
 </ng-template>
+
+
+<ng-template #noImage>
+  <mat-icon>music_note</mat-icon>
+</ng-template>
+<!-- <ng-template #noImage>
+  <mat-icon>music_note</mat-icon>
+</ng-template>
+<img *ngIf="item.media?.path; else noImage" [src]="'file://' + item.media.path" />{{item.name}}
+</span> -->

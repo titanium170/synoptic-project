@@ -12,6 +12,8 @@
     <p class="mat-body-1">Comment: {{media.comment || '' }}</p>
     <p class="mat-body-1">Categories: {{ getCategories() || 'none'}}</p>
     <p class="mat-body-1">Playlists: {{ getPlaylists() || 'none' }}</p>
+    <p class="mat-body-1">Image: {{ media.image?.name || 'none'}}</p>
+    <img *ngIf="media.image?.path" [src]="'file://' + media.image.path" width="100" height="100" />
   </div>
   <div class="form-container" *ngIf="isEditing">
     <mat-form-field class="example-full-width">
@@ -41,6 +43,11 @@
         </mat-select-trigger>
         <mat-option *ngFor="let playlist of playlistOptions" [value]="playlist">{{playlist.name}}</mat-option>
       </mat-select>
+    </mat-form-field>
+    <mat-form-field class="image">
+      <input matInput placeholder="Image" [disabled]="media.image ? (media.image.path ? false :  true) : true" [ngModel]="media.image?.name" (ngModelChange)="media.image = { name: $event, path: media.image?.path}">
+      <button *ngIf="media.image" matSuffix mat-raised-button (click)="deleteImage()" color="warn">X</button>
+      <button matSuffix mat-raised-button (click)="uploadImage()">Select image</button>
     </mat-form-field>
   </div>
 </mat-dialog-content>

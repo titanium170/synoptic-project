@@ -6,6 +6,7 @@ import { MediaFile } from './file-explorer/models/media-file';
 import { SaveFile } from './file-explorer/models/save-file';
 import { Playlist } from './file-explorer/models/playlist';
 import { PlaylistService } from './service/playlist.service';
+import { MediaService } from './service/media.service';
 
 
 @Component({
@@ -21,29 +22,25 @@ export class AppComponent {
   currentPath: string;
   canNavigateUp = false;
 
-  playlists$: Observable<Playlist[]>;
+  playlists: Playlist[];
 
   public selectedPlaylist: boolean = false;
 
   constructor(
     private fileService: FileService,
-    private playlistService: PlaylistService) {
-    const dummyFile = { name: 'dummy media', path: '', type: '.txt', comment: 'Sample comment' };
-    this.addFile(dummyFile);
+    private playlistService: PlaylistService,
+    private mediaService: MediaService) {
+    // const dummyFile = this.mediaService.createMediaFile('C:\\Users\\Robbie\\Documents\\Apprenticeship\\synoptic-project\\files\\test.txt');
+    // this.addFile(dummyFile);
     this.getPlaylists();
   }
 
   getPlaylists() {
-    this.playlists$ = this.playlistService.getPlaylists();
+    this.playlists = this.playlistService.getPlaylists();
   }
 
   addPlaylist(name: string) {
     this.playlistService.addPlaylist(name);
-    this.getPlaylists();
-  }
-
-  updatePlaylist({ media, playlist }: { media: MediaFile, playlist: Playlist }) {
-    this.playlistService.removeMediaItemFromPlaylist(media, playlist);
     this.getPlaylists();
   }
 
@@ -111,7 +108,6 @@ export class AppComponent {
   }
 
   updateElementMedia(element: FileElement) {
-    this.playlistService.addMediaItemToPlaylists(element.media);
     this.fileService.update(element.id, { media: element.media });
     this.updateFileElementQuery();
   }

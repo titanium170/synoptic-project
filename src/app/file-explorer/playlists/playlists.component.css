@@ -12,9 +12,15 @@ mat-list-item span {
   display: inline-flex;
 }
 
+img {
+  margin-right: 12px;
+}
+
 .item-content {
   vertical-align: middle;
   display: inline-flex;
+  width: 100%;
+  align-items: center;
 }
 
 .item-content>mat-icon {

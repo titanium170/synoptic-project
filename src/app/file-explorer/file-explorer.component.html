@@ -4,7 +4,7 @@
 
     <div class="content" fxFlex fxLayout="row">
 
-      <mat-grid-list cols="8" rowHeight="100px" fxFlex>
+      <mat-grid-list cols="5" rowHeight="100px" fxFlex>
 
         <mat-grid-tile *ngFor="let element of fileElements" class="file-or-folder">
           <span [matMenuTriggerFor]="rootMenu" [matMenuTriggerData]="{element: element}" #menuTrigger="matMenuTrigger">
@@ -14,9 +14,15 @@
             <mat-icon color="primary" class="file-or-folder-icon pointer" *ngIf="element.isFolder">
               folder
             </mat-icon>
-            <mat-icon color="primary" class="file-or-folder-icon pointer" *ngIf="!element.isFolder">
-              insert_drive_file
-            </mat-icon>
+            <ng-container *ngIf="!element.isFolder">
+              <img *ngIf="element.media.image?.path; else noImage" class="pointer" [src]="'file://' + element.media.image.path" width="50" height="50" />
+              <ng-template #noImage>
+                <mat-icon color="primary" class="file-or-folder-icon pointer">
+                  insert_drive_file
+                </mat-icon>
+              </ng-template>
+            </ng-container>
+
 
             <span class="file-name">{{element.media?.name || element.name}}</span>
           </div>
