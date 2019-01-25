@@ -42,6 +42,10 @@ export class FileService implements IFileService {
   }
 
   delete(id: string) {
+    if (!this.get(id).isFolder) {
+      this.mediaService.delete(this.get(id).media);
+    }
+
     this.fileElementMap.delete(id);
   }
 

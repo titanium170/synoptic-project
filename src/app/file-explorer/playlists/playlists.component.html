@@ -15,13 +15,15 @@
 </div>
 <ng-template #playlistContent>
   <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-    <div class="example-box" *ngFor="let item of getItems(selectedPlaylist)" cdkDrag>
-      <span class="item-content">
-        <img mat-card-avatar *ngIf="item.image?.path; else noImage" [src]="'file://' + item.image.path" width="62" height="62" />{{item.name}}
-        <span class="spacer"></span>
-        <mat-icon class="pointer" (click)="removeMediaFromPlaylist(item, selectedPlaylist)">delete</mat-icon>
-      </span>
-    </div>
+    <ng-container *ngFor="let item of selectedPlaylistItems">
+      <div class="example-box" cdkDrag *ngIf="item">
+        <span class="item-content">
+          <img mat-card-avatar *ngIf="item.image?.path; else noImage" [src]="'file://' + item.image.path" width="62" height="62" />{{item.name}}
+          <span class="spacer"></span>
+          <mat-icon class="pointer" (click)="removeMediaFromPlaylist(item, selectedPlaylist)">delete</mat-icon>
+        </span>
+      </div>
+    </ng-container>
   </div>
 </ng-template>
 

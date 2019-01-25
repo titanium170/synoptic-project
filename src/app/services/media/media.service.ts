@@ -10,6 +10,7 @@ export interface IMediaService {
   createMediaFile(filePath: string): MediaFile;
   add(media: MediaFile);
   getMediaFiles(): MediaFile[];
+  delete(media: MediaFile);
 }
 
 @Injectable({
@@ -86,6 +87,11 @@ export class MediaService implements IMediaService {
     this.add(mediaFile);
 
     return mediaFile;
+  }
+
+  delete(media: MediaFile) {
+    const index = this._mediaFiles.map(mf => mf.name).indexOf(media.name);
+    this._mediaFiles.splice(index, 1);
   }
 
   private mediaFileExists(mediaFile: MediaFile): boolean {

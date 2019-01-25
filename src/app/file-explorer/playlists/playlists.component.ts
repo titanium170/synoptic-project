@@ -36,6 +36,7 @@ export class PlaylistsComponent implements OnInit {
 
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.selectedPlaylist.itemOrder, event.previousIndex, event.currentIndex);
+    this.selectedPlaylistItems = this.getItems(this.selectedPlaylist);
     console.log('items: ', this.selectedPlaylist.itemOrder);
   }
 
@@ -66,8 +67,11 @@ export class PlaylistsComponent implements OnInit {
   }
 
   removeMediaFromPlaylist(media: MediaFile, playlist: Playlist) {
-    const index = media.playlists.map(p => p.name).indexOf(playlist.name);
+    let index = media.playlists.map(p => p.name).indexOf(playlist.name);
     media.playlists.splice(index, 1);
+    index = this.selectedPlaylist.itemOrder.indexOf(media.name);
+    this.selectedPlaylist.itemOrder.splice(index, 1);
+    this.selectedPlaylistItems = this.getItems(playlist);
   }
 
 }

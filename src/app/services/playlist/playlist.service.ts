@@ -45,18 +45,27 @@ export class PlaylistService implements IPlaylistService {
   private orderItems(items: MediaFile[], playlist: Playlist): MediaFile[] {
     let orderedItems = [];
     if (playlist.itemOrder) {
+
       const matchedItems = items.filter(i => playlist.itemOrder.includes(i.name));
       const unmatchedItems = items.filter(i => !playlist.itemOrder.includes(i.name));
 
-      this._addMatched(playlist, orderedItems, matchedItems);
-      this._addUnmatched(playlist, orderedItems, unmatchedItems);
+      // Add matched
+      for (const orderItem of playlist.itemOrder) {
+        orderedItems.push(matchedItems.find(i => i.name === orderItem));
+      }
+
+      // Add unmatched
+      for (const unmatched of unmatchedItems) {
+        playlist.itemOrder.push(unmatched.name);
+        orderedItems.push(unmatched);
+      }
+
     } else {
       playlist.itemOrder = items.map(i => i.name);
       orderedItems = items;
     }
     return orderedItems;
   }
-
 
   getPlaylists(): Playlist[] {
     return this._playlists;
@@ -94,10 +103,6 @@ export class PlaylistService implements IPlaylistService {
     }
   }
 
-  get(playlist: Playlist) {
-    return this._playlists.find(p => p.name === playlist.name);
-  }
-
   private _removePlaylistReferences(playlist: Playlist) {
     for (const item of this.getItems(playlist)) {
       const index = item.playlists.map(p => p.name).indexOf(playlist.name);
@@ -105,30 +110,12 @@ export class PlaylistService implements IPlaylistService {
     }
   }
 
+  get(playlist: Playlist) {
+    return this._playlists.find(p => p.name === playlist.name);
+  }
+
   private _playlistExists(name: string): boolean {
     return this._playlists.map(p => p.name).indexOf(name) > -1;
-  }
-
-
-  private _addUnmatched(
-    playlist: Playlist,
-    orderedItems: MediaFile[],
-    unmatchedItems: MediaFile[]): MediaFile[] {
-    for (const unmatched of unmatchedItems) {
-      playlist.itemOrder.push(unmatched.name);
-      orderedItems.push(unmatched);
-    }
-    return orderedItems;
-  }
-
-  private _addMatched(
-    playlist: Playlist,
-    orderedItems: MediaFile[],
-    matchedItems: MediaFile[]): MediaFile[] {
-    for (const orderItem of playlist.itemOrder) {
-      orderedItems.push(matchedItems.find(i => i.name === orderItem));
-    }
-    return orderedItems;
   }
 
 }
