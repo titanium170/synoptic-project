@@ -1,8 +1,8 @@
 import { Injectable, NgZone } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
-import { MediaFile } from '../file-explorer/models/media-file';
+import { MediaFile } from '../../file-explorer/models/media-file';
 import { MatDialog } from '@angular/material/dialog';
-import { SelectUploadDialogComponent } from '../file-explorer/modals/select-upload-dialog/select-upload-dialog.component';
+import { SelectUploadDialogComponent } from '../../file-explorer/modals/select-upload-dialog/select-upload-dialog.component';
 
 export interface IMediaService {
   openFileUploadDialog(callback: Function);

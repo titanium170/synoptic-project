@@ -1,22 +1,22 @@
 import { Injectable, NgZone } from '@angular/core';
-import { FileElement } from '../file-explorer/models/file-element';
+import { FileElement } from '../../file-explorer/models/file-element';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { v4 } from 'uuid';
-import { MediaFile } from '../file-explorer/models/media-file';
-import { SaveFile } from '../file-explorer/models/save-file';
+import { MediaFile } from '../../file-explorer/models/media-file';
+import { SaveFile } from '../../file-explorer/models/save-file';
 import { ElectronService } from 'ngx-electron';
-import { PlaylistService } from './playlist.service';
-import { CategoryService } from './category.service';
-import { MediaService } from './media.service';
+import { PlaylistService } from '../playlist/playlist.service';
+import { CategoryService } from '../category/category.service';
+import { MediaService } from '../media/media.service';
 
 export interface IFileService {
   add(fileElement: FileElement);
   delete(id: string);
   update(id: string, update: Partial<FileElement>);
-  saveState();
-  loadState(saveFile: SaveFile);
   queryInFolder(folderId: string): Observable<FileElement[]>;
   get(id: string): FileElement;
+  getFileElements(): FileElement[];
+  clearElements();
 }
 
 @Injectable({
@@ -53,40 +53,6 @@ export class FileService implements IFileService {
     this.fileElementMap.set(element.id, element);
   }
 
-  saveState() {
-    const files: FileElement[] = Array.from(this.fileElementMap.values());
-    const playlists = this.playlistService.getPlaylists();
-    const categories = this.categoryService.getCategories();
-    const saveFile: SaveFile = {
-      files: files,
-      playlists: playlists,
-      categories: categories
-    };
-    this.electron.ipcRenderer.send('save-file-dialog', ['json'], saveFile);
-    this.electron.ipcRenderer.on('save-file-created', (event: Event) => {
-      this.zone.run(() => {
-        alert('State saved successfully');
-      })
-    })
-  }
-
-  loadState(saveFile: SaveFile) {
-    this.fileElementMap.clear();
-    for (const file of saveFile.files) {
-      this.add(file);
-      if (file.media) {
-        this.mediaService.add(file.media);
-      }
-    }
-    for (const category of saveFile.categories) {
-      this.categoryService.addCategory(category.name);
-    }
-    this.categoryService.updateReferences();
-    for (const playlist of saveFile.playlists) {
-      this.playlistService.addPlaylist(playlist.name);
-    }
-    this.playlistService.updateReferences();
-  }
 
   queryInFolder(folderId: string): Observable<FileElement[]> {
     const result: FileElement[] = [];
@@ -105,6 +71,14 @@ export class FileService implements IFileService {
 
   get(id: string) {
     return this.fileElementMap.get(id);
+  }
+
+  getFileElements() {
+    return Array.from(this.fileElementMap.values());
+  }
+
+  clearElements() {
+    this.fileElementMap.clear();
   }
 
   private fileExists(file: FileElement): boolean {

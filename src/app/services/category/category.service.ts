@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Category } from '../file-explorer/models/category';
-import { MediaService } from './media.service';
+import { Category } from '../../file-explorer/models/category';
+import { MediaService } from '../media/media.service';
 
 export interface ICategoryService {
   addCategory(name: string): Category;

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Category } from '../../models/category';
-import { CategoryService } from 'src/app/service/category.service';
+import { CategoryService } from 'src/app/services/category/category.service';
 import { MatDialog } from '@angular/material/dialog';
 import { NameDialogComponent } from '../name-dialog/name-dialog.component';
 
@@ -44,7 +44,5 @@ export class CategoryDialogComponent implements OnInit {
     this.categoryService.removeCategory(name);
     this.getCategories();
   }
-
-
 
 }

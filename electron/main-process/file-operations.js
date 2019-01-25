@@ -112,11 +112,9 @@ ipcMain.on('open-save-file-dialog', (event, fileTypes) => {
           console.log('An error occurred: ', err.message);
           return;
         }
-
         const saveFile = JSON.parse(data);
         console.log('saveFile: ', saveFile);
         event.sender.send('selected-save-file', saveFile);
-
       });
     }
   })

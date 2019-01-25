@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MediaService } from './media.service';
+import { PlaylistService } from './playlist/playlist.service';
 
-describe('MediaService', () => {
+describe('PlaylistService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: MediaService = TestBed.get(MediaService);
+    const service: PlaylistService = TestBed.get(PlaylistService);
     expect(service).toBeTruthy();
   });
 });

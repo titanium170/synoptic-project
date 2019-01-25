@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FileElement } from './file-explorer/models/file-element';
-import { FileService } from './service/file.service';
+import { FileService } from './services/file/file.service';
 import { MediaFile } from './file-explorer/models/media-file';
 import { SaveFile } from './file-explorer/models/save-file';
 import { Playlist } from './file-explorer/models/playlist';
-import { PlaylistService } from './service/playlist.service';
-import { MediaService } from './service/media.service';
+import { PlaylistService } from './services/playlist/playlist.service';
 
 
 @Component({
@@ -24,16 +23,17 @@ export class AppComponent {
 
   playlists: Playlist[];
 
-  public selectedPlaylist: boolean = false;
+  public selectedPlaylist = false;
 
   constructor(
     private fileService: FileService,
-    private playlistService: PlaylistService,
-    private mediaService: MediaService) {
-    // const dummyFile = this.mediaService.createMediaFile('C:\\Users\\Robbie\\Documents\\Apprenticeship\\synoptic-project\\files\\test.txt');
-    // this.addFile(dummyFile);
+    private playlistService: PlaylistService) {
     this.getPlaylists();
   }
+
+
+
+  // Playlist operations
 
   getPlaylists() {
     this.playlists = this.playlistService.getPlaylists();
@@ -54,24 +54,9 @@ export class AppComponent {
     this.getPlaylists();
   }
 
-  loadSave(saveFile: SaveFile) {
-    this.fileService.loadState(saveFile);
-    this.updateFileElementQuery();
-  }
 
-  saveState() {
-    this.fileService.saveState();
-  }
 
-  onDrop(event) {
-    event.preventDefault();
-    console.log('drop event: ', event);
-    console.log('dropped files: ', event.dataTransfer.files);
-  }
-  onDragOver(event) {
-    event.stopPropagation();
-    event.preventDefault();
-  }
+  // File service operations
 
   addFolder(folder: { name: string }) {
     this.fileService.add({
@@ -112,8 +97,6 @@ export class AppComponent {
     this.updateFileElementQuery();
   }
 
-
-
   updateFileElementQuery() {
     this.fileElements$ = this.fileService.queryInFolder(this.currentRoot ? this.currentRoot.id : 'root');
   }
@@ -145,7 +128,7 @@ export class AppComponent {
 
   popFromPath(path: string) {
     let p = path ? path : '';
-    let split = p.split('/');
+    const split = p.split('/');
     split.splice(split.length - 2, 1);
     p = split.join('/');
     return p;

@@ -1,13 +1,13 @@
-import { Component, OnInit, Output, EventEmitter, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NewFolderDialogComponent } from '../modals/new-folder-dialog/new-folder-dialog.component';
 import { MediaFile } from '../models/media-file';
-import { ElectronService } from 'ngx-electron';
-import { SaveFile } from '../models/save-file';
 import { CategoryDialogComponent } from '../modals/category-dialog/category-dialog.component';
 import { NameDialogComponent } from '../modals/name-dialog/name-dialog.component';
 import { Playlist } from '../models/playlist';
-import { MediaService } from 'src/app/service/media.service';
+import { MediaService } from 'src/app/services/media/media.service';
+import { LoadService } from 'src/app/services/load/load.service';
+import { SaveService } from '../../services/save/save.service';
 
 @Component({
   selector: 'app-menu-bar',
@@ -25,15 +25,13 @@ export class MenuBarComponent implements OnInit {
   @Output() playlistAdded = new EventEmitter<string>();
   @Output() playlistClosed = new EventEmitter();
   @Output() navigatedUp = new EventEmitter();
-  @Output() saveState = new EventEmitter();
-  @Output() savedStateLoaded = new EventEmitter<SaveFile>();
 
 
   constructor(
     public dialog: MatDialog,
-    private electron: ElectronService,
-    private zone: NgZone,
-    private mediaService: MediaService) { }
+    private mediaService: MediaService,
+    private saveService: SaveService,
+    private loadService: LoadService) { }
 
   ngOnInit() {
 
@@ -52,16 +50,11 @@ export class MenuBarComponent implements OnInit {
   }
 
   openCategoryDialog() {
-    const dialogRef = this.dialog.open(CategoryDialogComponent);
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        // do something
-      }
-    });
+    this.dialog.open(CategoryDialogComponent);
   }
 
   openNewFolderDialog() {
-    let dialogRef = this.dialog.open(NewFolderDialogComponent);
+    const dialogRef = this.dialog.open(NewFolderDialogComponent);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.folderAdded.emit({ name: res });
@@ -81,29 +74,16 @@ export class MenuBarComponent implements OnInit {
     }
   }
 
+  openLoadFileDialog() {
+    this.loadService.openLoadFileDialog();
+  }
+
   openSaveFileDialog() {
-    this.saveState.emit();
+    this.saveService.saveState();
   }
 
   navigateUp() {
     this.navigatedUp.emit();
-  }
-
-  openLoadFileDialog() {
-    this.electron.ipcRenderer.send('open-save-file-dialog', ['json']);
-    this.electron.ipcRenderer.on('selected-save-file', (event: Event, file: SaveFile) => {
-      if (!file) {
-        console.log('No file was selected');
-        return;
-      }
-      // Electron is running outside of the angular zone (NgZone)
-      // So change detection will not be run automatically
-      // NgZone.run() is used to run change detection manually
-      this.zone.run(() => {
-        this.savedStateLoaded.emit(file);
-      });
-      this.electron.ipcRenderer.removeAllListeners('selected-save-file');
-    })
   }
 
 }

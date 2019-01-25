@@ -5,9 +5,7 @@ import { NameDialogComponent } from '../modals/name-dialog/name-dialog.component
 import { MediaFile } from '../models/media-file';
 import { ViewMediaDialogComponent } from '../modals/view-media-dialog/view-media-dialog.component';
 import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
-import { PlaylistService } from 'src/app/service/playlist.service';
-
-
+import { PlaylistService } from 'src/app/services/playlist/playlist.service';
 
 @Component({
   selector: 'app-playlists',

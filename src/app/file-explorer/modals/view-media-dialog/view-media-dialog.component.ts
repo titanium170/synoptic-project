@@ -4,9 +4,9 @@ import { MediaFile } from '../../models/media-file';
 import { FormControl } from '@angular/forms';
 import { Category } from '../../models/category';
 import { Playlist } from '../../models/playlist';
-import { CategoryService } from 'src/app/service/category.service';
-import { PlaylistService } from 'src/app/service/playlist.service';
-import { MediaService } from 'src/app/service/media.service';
+import { CategoryService } from 'src/app/services/category/category.service';
+import { PlaylistService } from 'src/app/services/playlist/playlist.service';
+import { MediaService } from 'src/app/services/media/media.service';
 
 @Component({
   selector: 'app-view-media-dialog',
@@ -15,7 +15,6 @@ import { MediaService } from 'src/app/service/media.service';
 })
 export class ViewMediaDialogComponent implements OnInit {
 
-  // TODO: get options from a service
   public isEditing: boolean = false;
   public categories = new FormControl();
   public categoryOptions: Category[] = [];
